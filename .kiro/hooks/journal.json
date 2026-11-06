@@ -1,0 +1,13 @@
+{
+    "version":  "v1",
+    "hooks":  [
+                  {
+                      "name":  "journal",
+                      "trigger":  "PostTaskExec",
+                      "action":  {
+                                     "type":  "agent",
+                                     "prompt":  "A spec task just finished. Append exactly one line to the end of docs/kiro-journal.md in the form \"- YYYY-MM-DD | \u003cKiro feature\u003e | \u003cdescription\u003e\", using today\u0027s date. The Kiro feature is one of Specs, Steering, Hooks, Agent, Property-based testing or similar. The description is at most 2 sentences saying which Kiro feature was used and how. Do not use the | character inside the feature or description. Do not change any other line."
+                                 }
+                  }
+              ]
+}

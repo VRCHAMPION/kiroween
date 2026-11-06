@@ -1,0 +1,35 @@
+[data-view='mortal'] {
+  --color-bg: #ffffff;
+  --color-surface: #f4f1ea;
+  --color-text: #111111;
+  --color-text-muted: #444444;
+  --color-accent-flag: #b00020;
+  --color-border: #595959;
+  --color-focus: #0b57d0;
+  --font-family: system-ui, 'Segoe UI', Arial, sans-serif;
+  --font-size-body: 20px;
+  --font-size-heading: 32px;
+  --focus-width: 3px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+}
+
+[data-view='haunted'] {
+  --color-bg: #0f0b1a;
+  --color-surface: #1b1430;
+  --color-text: #f2eeff;
+  --color-text-muted: #c9c0e6;
+  --color-accent-flag: #ff6b81;
+  --color-border: #8f84b8;
+  --color-focus: #ffd166;
+  --font-family: Georgia, 'Times New Roman', serif;
+  --font-size-body: 17px;
+  --font-size-heading: 30px;
+  --focus-width: 3px;
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+}

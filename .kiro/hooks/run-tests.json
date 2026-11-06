@@ -1,0 +1,14 @@
+{
+    "version":  "v1",
+    "hooks":  [
+                  {
+                      "name":  "run-tests",
+                      "trigger":  "PostFileSave",
+                      "matcher":  "(^|[/\\\\])src[/\\\\].*\\.tsx?$",
+                      "action":  {
+                                     "type":  "command",
+                                     "command":  "npx vitest --run"
+                                 }
+                  }
+              ]
+}

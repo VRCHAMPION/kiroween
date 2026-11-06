@@ -1,0 +1,23 @@
+{
+    "version":  "v1",
+    "hooks":  [
+                  {
+                      "name":  "rule-tests-create",
+                      "trigger":  "PostFileCreate",
+                      "matcher":  "(^|[/\\\\])src[/\\\\]detection[/\\\\]rules[/\\\\](?![^/\\\\]*\\.test\\.ts$)[^/\\\\]+\\.ts$",
+                      "action":  {
+                                     "type":  "agent",
+                                     "prompt":  "A detection rule file in src/detection/rules/ was created or changed. Create or update its matching \u003crule\u003e.test.ts in the same folder. Cover what the rule flags, what it must not flag, and the exact start and end of each flagged span. Where the behaviour can be expressed as a property over generated input, add a fast-check property-based test with numRuns of at least 100 and a one-sentence comment above it stating the property. Do not edit any file other than that test file. Run npx vitest --run on the test file and make it pass."
+                                 }
+                  },
+                  {
+                      "name":  "rule-tests-save",
+                      "trigger":  "PostFileSave",
+                      "matcher":  "(^|[/\\\\])src[/\\\\]detection[/\\\\]rules[/\\\\](?![^/\\\\]*\\.test\\.ts$)[^/\\\\]+\\.ts$",
+                      "action":  {
+                                     "type":  "agent",
+                                     "prompt":  "A detection rule file in src/detection/rules/ was created or changed. Create or update its matching \u003crule\u003e.test.ts in the same folder. Cover what the rule flags, what it must not flag, and the exact start and end of each flagged span. Where the behaviour can be expressed as a property over generated input, add a fast-check property-based test with numRuns of at least 100 and a one-sentence comment above it stating the property. Do not edit any file other than that test file. Run npx vitest --run on the test file and make it pass."
+                                 }
+                  }
+              ]
+}
