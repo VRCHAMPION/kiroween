@@ -31,6 +31,10 @@ const REQUIRED = [
   '--color-accent-flag',
   '--color-border',
   '--color-focus',
+  '--color-verdict-scam',
+  '--color-verdict-suspicious',
+  '--color-verdict-safe',
+  '--color-highlight',
   '--font-family',
   '--font-size-body',
   '--font-size-heading',
@@ -48,6 +52,7 @@ const TEXT_PAIRS: [string, string][] = [
   ['--color-text-muted', '--color-surface'],
   ['--color-accent-flag', '--color-bg'],
   ['--color-accent-flag', '--color-surface'],
+  ['--color-text', '--color-highlight'],
 ];
 
 const BOUNDARY_PAIRS: [string, string][] = [
@@ -55,6 +60,16 @@ const BOUNDARY_PAIRS: [string, string][] = [
   ['--color-border', '--color-surface'],
   ['--color-focus', '--color-bg'],
   ['--color-focus', '--color-surface'],
+  ['--color-verdict-scam', '--color-bg'],
+  ['--color-verdict-scam', '--color-surface'],
+  ['--color-verdict-suspicious', '--color-bg'],
+  ['--color-verdict-suspicious', '--color-surface'],
+  ['--color-verdict-safe', '--color-bg'],
+  ['--color-verdict-safe', '--color-surface'],
+  ['--color-bg', '--color-verdict-scam'],
+  ['--color-bg', '--color-verdict-suspicious'],
+  ['--color-bg', '--color-verdict-safe'],
+  ['--color-bg', '--color-text'],
 ];
 
 const px = (value: string) => parseFloat(value.replace('px', ''));

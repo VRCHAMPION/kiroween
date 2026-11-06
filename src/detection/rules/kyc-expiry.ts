@@ -17,6 +17,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const kycExpiry: Rule = {
   id: 'kyc-expiry',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'kyc-expiry', label: 'KYC expiry scare' });
+    return findPhrases(input.text, PATTERNS, { type: 'kyc-expiry', label: 'KYC expiry scare', skip: input.links });
   },
 };

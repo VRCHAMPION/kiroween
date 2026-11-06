@@ -32,6 +32,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const digitalArrest: Rule = {
   id: 'digital-arrest',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'digital-arrest', label: 'Fake "digital arrest"' });
+    return findPhrases(input.text, PATTERNS, { type: 'digital-arrest', label: 'Fake "digital arrest"', skip: input.links });
   },
 };

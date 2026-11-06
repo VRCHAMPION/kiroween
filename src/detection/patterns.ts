@@ -12,6 +12,8 @@ export interface PhraseOptions {
   label: string;
   /** Skip matches that the same sentence negates, as in "Never share your OTP". */
   negationGuard?: boolean;
+  /** Ranges such as links; a match that starts inside one is skipped. */
+  skip?: readonly { start: number; end: number }[];
 }
 
 const NEGATION = /\b(never|not|don't|dont|do not|no one|nobody|won't|will not)\b/i;
@@ -53,6 +55,7 @@ export function findPhrases(text: string, patterns: readonly PhrasePattern[], op
     for (const m of text.matchAll(new RegExp(pattern.re.source, flags))) {
       if (m[0].length === 0) continue;
       if (options.negationGuard && isNegated(text, m.index)) continue;
+      if (options.skip?.some((r) => m.index >= r.start && m.index < r.end)) continue;
       hits.push({ start: m.index, end: m.index + m[0].length, pattern });
     }
   }

@@ -41,8 +41,8 @@ export const urgencyThreats: Rule = {
   id: 'urgency-threats',
   check(input) {
     return [
-      ...findPhrases(input.text, URGENCY, { type: 'urgency', label: 'Pressure to act fast' }),
-      ...findPhrases(input.text, THREAT, { type: 'threat', label: 'Threat or scare tactic' }),
+      ...findPhrases(input.text, URGENCY, { type: 'urgency', label: 'Pressure to act fast', skip: input.links }),
+      ...findPhrases(input.text, THREAT, { type: 'threat', label: 'Threat or scare tactic', skip: input.links }),
     ];
   },
 };

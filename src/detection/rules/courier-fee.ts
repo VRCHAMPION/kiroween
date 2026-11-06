@@ -17,6 +17,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const courierFee: Rule = {
   id: 'courier-fee',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'courier-fee', label: 'Parcel fee trick' });
+    return findPhrases(input.text, PATTERNS, { type: 'courier-fee', label: 'Parcel fee trick', skip: input.links });
   },
 };

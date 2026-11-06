@@ -22,6 +22,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const upiRefund: Rule = {
   id: 'upi-refund',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'upi-refund', label: 'Fake refund trick' });
+    return findPhrases(input.text, PATTERNS, { type: 'upi-refund', label: 'Fake refund trick', skip: input.links });
   },
 };

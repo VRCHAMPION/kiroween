@@ -5,7 +5,7 @@ body {
 
 .app {
   min-height: 100vh;
-  padding: var(--space-3);
+  padding: var(--space-2);
   box-sizing: border-box;
   background: var(--color-bg);
   color: var(--color-text);
@@ -25,11 +25,20 @@ body {
   color: var(--color-text-muted);
 }
 
+.app-header,
 .app main {
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.app-header {
+  margin-bottom: var(--space-4);
+}
+
+.settings {
   display: grid;
   gap: var(--space-2);
-  max-width: 40rem;
-  padding: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   background: var(--color-surface);
   border: 2px solid var(--color-border);
 }
@@ -76,5 +85,10 @@ body {
   .app * {
     animation: none !important;
     transition: none !important;
+  }
+}
+@media (min-width: 30rem) {
+  .app {
+    padding: var(--space-3);
   }
 }

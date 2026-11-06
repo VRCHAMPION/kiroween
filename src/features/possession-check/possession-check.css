@@ -1,0 +1,336 @@
+/* Mobile first: one column, large targets, tokens only. */
+.possession-check {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.possession-check h2,
+.possession-check h3,
+.possession-check h4 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.possession-check h2 {
+  font-size: var(--font-size-heading);
+}
+
+.possession-check p {
+  margin: 0;
+}
+
+.field {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.field label {
+  font-weight: 700;
+}
+
+.hint,
+.privacy-note,
+.disclaimer,
+.flag-where,
+.dropzone-text {
+  color: var(--color-text-muted);
+}
+
+.message-box {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 12rem;
+  padding: var(--space-2);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+  font: inherit;
+}
+
+.input-options {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.dropzone {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  padding: var(--space-3);
+  border: 2px dashed var(--color-border);
+  background: var(--color-surface);
+}
+
+.dropzone-active {
+  border-style: solid;
+  border-color: var(--color-focus);
+}
+
+.email-details {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+}
+
+.email-details dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+}
+
+.email-details dt {
+  font-weight: 700;
+}
+
+.email-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.notice:empty {
+  display: none;
+}
+
+.error {
+  padding: var(--space-2);
+  border: 2px solid var(--color-verdict-scam);
+  background: var(--color-surface);
+  font-weight: 700;
+}
+
+.check-row {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.button {
+  box-sizing: border-box;
+  min-height: 48px;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button-primary {
+  width: 100%;
+  min-height: 56px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+  font-size: var(--font-size-body);
+}
+
+.button:focus-visible,
+.message-box:focus-visible,
+.field select:focus-visible,
+.result-panel h2:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.result-panel {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+}
+
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-bg);
+  border: 3px solid var(--color-border);
+}
+
+.verdict-title {
+  font-size: var(--font-size-heading);
+  font-weight: 700;
+}
+
+.verdict-icon {
+  flex: none;
+}
+
+.verdict-icon-mark {
+  fill: var(--color-bg);
+}
+
+.verdict-icon-tick {
+  fill: none;
+  stroke: var(--color-bg);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.verdict-scam {
+  border-color: var(--color-verdict-scam);
+}
+
+.verdict-scam .verdict-icon-shape {
+  fill: var(--color-verdict-scam);
+}
+
+.verdict-suspicious {
+  border-color: var(--color-verdict-suspicious);
+}
+
+.verdict-suspicious .verdict-icon-shape {
+  fill: var(--color-verdict-suspicious);
+}
+
+.verdict-safe {
+  border-color: var(--color-verdict-safe);
+}
+
+.verdict-safe .verdict-icon-shape {
+  fill: var(--color-verdict-safe);
+}
+
+.score-text strong {
+  font-size: var(--font-size-heading);
+}
+
+.score-meter {
+  width: 100%;
+  height: 1.5rem;
+}
+
+.checked-message,
+.checked-details {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+}
+
+.message-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.header-text {
+  font-size: 0.9em;
+}
+
+.message-text mark,
+.attachment-name mark {
+  background: var(--color-highlight);
+  color: var(--color-text);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-accent-flag);
+}
+
+.flag-ref {
+  display: inline-block;
+  min-width: 1.4em;
+  margin-left: 2px;
+  padding: 0 4px;
+  border: 2px solid var(--color-accent-flag);
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  vertical-align: super;
+}
+
+.attachment-list,
+.flag-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flag-card {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-left-width: 8px;
+}
+
+.flag-card.severity-high {
+  border-left-color: var(--color-verdict-scam);
+}
+
+.flag-card.severity-medium {
+  border-left-color: var(--color-verdict-suspicious);
+}
+
+.flag-number {
+  display: inline-block;
+  min-width: 1.6em;
+  border: 2px solid var(--color-accent-flag);
+  border-radius: 999px;
+  text-align: center;
+}
+
+.flag-severity {
+  font-weight: 700;
+}
+
+.flag-quote q {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.flag-where {
+  display: block;
+  font-size: 0.9em;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (min-width: 48rem) {
+  .input-options {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .button-primary {
+    width: auto;
+    justify-self: start;
+  }
+}

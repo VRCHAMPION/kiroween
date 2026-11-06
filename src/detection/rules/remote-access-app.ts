@@ -17,6 +17,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const remoteAccessApp: Rule = {
   id: 'remote-access-app',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'remote-access-app', label: 'Asks to install remote access', negationGuard: true });
+    return findPhrases(input.text, PATTERNS, { type: 'remote-access-app', label: 'Asks to install remote access', skip: input.links, negationGuard: true });
   },
 };

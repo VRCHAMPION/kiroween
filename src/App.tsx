@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ReducedMotionToggle } from './components/ReducedMotionToggle';
 import { ViewToggle } from './components/ViewToggle';
+import { PossessionCheck } from './features/possession-check/PossessionCheck';
 import {
   readManualReducedMotion,
   readView,
@@ -29,13 +30,16 @@ export function App() {
 
   return (
     <div className="app" data-view={view} data-reduced-motion={String(reduced)}>
-      <header>
+      <header className="app-header">
         <h1>Phantom Inbox</h1>
         <p>Every scam has a ghost hiding in it. Phantom Inbox makes it visible.</p>
+        <div className="settings" role="group" aria-label="Display settings">
+          <ViewToggle view={view} onChange={handleViewChange} />
+          <ReducedMotionToggle manual={manual} systemReduces={system} onChange={handleManualChange} />
+        </div>
       </header>
       <main>
-        <ViewToggle view={view} onChange={handleViewChange} />
-        <ReducedMotionToggle manual={manual} systemReduces={system} onChange={handleManualChange} />
+        <PossessionCheck />
       </main>
     </div>
   );

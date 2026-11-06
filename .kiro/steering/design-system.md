@@ -9,12 +9,14 @@ Two views share the same token names. Each view sets its own values. The shell s
 ## Tokens: Mortal view
 
 - Colours: `--color-bg` #FFFFFF, `--color-surface` #F4F1EA, `--color-text` #111111, `--color-text-muted` #444444, `--color-accent-flag` #B00020, `--color-border` #595959, `--color-focus` #0B57D0.
+- Verdicts and highlights: `--color-verdict-scam` #B00020, `--color-verdict-suspicious` #8A5A00, `--color-verdict-safe` #0B6E4F, `--color-highlight` #FFE08A.
 - Typography: `--font-family` system-ui, "Segoe UI", Arial, sans-serif; `--font-size-body` 20px; `--font-size-heading` 32px.
 - Spacing and focus: `--space-1` 8px, `--space-2` 16px, `--space-3` 24px, `--space-4` 32px; `--focus-width` 3px.
 
 ## Tokens: Haunted view
 
 - Colours: `--color-bg` #0F0B1A, `--color-surface` #1B1430, `--color-text` #F2EEFF, `--color-text-muted` #C9C0E6, `--color-accent-flag` #FF6B81, `--color-border` #8F84B8, `--color-focus` #FFD166.
+- Verdicts and highlights: `--color-verdict-scam` #FF6B81, `--color-verdict-suspicious` #FFC857, `--color-verdict-safe` #5FD3A5, `--color-highlight` #5C3A00.
 - Typography: `--font-family` Georgia, "Times New Roman", serif; `--font-size-body` 17px; `--font-size-heading` 30px.
 - Spacing and focus: `--space-1` 8px, `--space-2` 16px, `--space-3` 24px, `--space-4` 32px; `--focus-width` 3px.
 
@@ -40,6 +42,8 @@ Two views share the same token names. Each view sets its own values. The shell s
 
 - Colour is never the only signal for a red flag. Each ghost has a visible text label of 1 to 40 characters that names the type of red flag.
 - Every ghost comes with a one-line plain-English reason.
+- Verdict icons differ by shape: an octagon for likely scam, a triangle for suspicious, a circle with a tick for looks safe. Verdict colours need 3:1 against the background and surface.
+- Highlighted words keep 4.5:1 text contrast, carry an underline, and end with the matching flag number.
 
 ## Reduced motion
 

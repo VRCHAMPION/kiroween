@@ -11,6 +11,9 @@ inclusion: always
 - `src/detection/`: the scam detection engine, which has no UI code.
 - `src/detection/rules/`: one file per detection rule.
 - `src/styles/`: CSS and style helpers such as design tokens and the contrast function.
+- `src/features/`: one folder per screen, such as `possession-check/`; feature code may import the detection engine.
+- `src/email/`: the `.eml` file parser, which works on strings only.
+- `src/data/`: sample messages used by the screens and tests.
 - `docs/`: project documents, including `docs/kiro-journal.md`.
 - `.kiro/steering/`: guidance files that Kiro reads in every session.
 - `.kiro/hooks/`: Kiro automations, one JSON file per hook group.
@@ -19,6 +22,7 @@ inclusion: always
 ## Tests
 
 - Tests for code under `src/` sit next to the code they test.
+- Shell files (`src/App.tsx`, `src/components/`) never import `src/detection/` directly; they mount features instead.
 - The top-level `tests/` folder holds only the repo conformance tests, `tests/repo-conformance.test.ts`.
 
 ## Detection rules

@@ -12,6 +12,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const sensitiveInfoRequest: Rule = {
   id: 'sensitive-info-request',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'sensitive-info-request', label: 'Asks for secret codes', negationGuard: true });
+    return findPhrases(input.text, PATTERNS, { type: 'sensitive-info-request', label: 'Asks for secret codes', skip: input.links, negationGuard: true });
   },
 };

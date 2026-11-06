@@ -22,6 +22,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const jobTaskScam: Rule = {
   id: 'job-task-scam',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'job-task-scam', label: 'Too-good job offer' });
+    return findPhrases(input.text, PATTERNS, { type: 'job-task-scam', label: 'Too-good job offer', skip: input.links });
   },
 };

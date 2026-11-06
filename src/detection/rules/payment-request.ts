@@ -17,6 +17,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const paymentRequest: Rule = {
   id: 'payment-request',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'payment-request', label: 'Unusual payment request', negationGuard: true });
+    return findPhrases(input.text, PATTERNS, { type: 'payment-request', label: 'Unusual payment request', skip: input.links, negationGuard: true });
   },
 };

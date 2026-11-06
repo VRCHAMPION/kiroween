@@ -6,6 +6,10 @@
   --color-accent-flag: #b00020;
   --color-border: #595959;
   --color-focus: #0b57d0;
+  --color-verdict-scam: #b00020;
+  --color-verdict-suspicious: #8a5a00;
+  --color-verdict-safe: #0b6e4f;
+  --color-highlight: #ffe08a;
   --font-family: system-ui, 'Segoe UI', Arial, sans-serif;
   --font-size-body: 20px;
   --font-size-heading: 32px;
@@ -24,6 +28,10 @@
   --color-accent-flag: #ff6b81;
   --color-border: #8f84b8;
   --color-focus: #ffd166;
+  --color-verdict-scam: #ff6b81;
+  --color-verdict-suspicious: #ffc857;
+  --color-verdict-safe: #5fd3a5;
+  --color-highlight: #5c3a00;
   --font-family: Georgia, 'Times New Roman', serif;
   --font-size-body: 17px;
   --font-size-heading: 30px;

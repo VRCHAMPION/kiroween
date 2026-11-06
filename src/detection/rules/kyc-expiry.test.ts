@@ -12,6 +12,10 @@ describe('kyc-expiry rule', () => {
     expect(spans(run(kycExpiry, 'Please update your PAN card today'))).toEqual(['update your PAN card']);
   });
 
+  it('does not start a match inside a web address', () => {
+    expect(spans(run(kycExpiry, 'Open https://bit.ly/kyc-99 or your account will be blocked.'))).toEqual([]);
+  });
+
   it('does not flag unrelated text', () => {
     expect(run(kycExpiry, 'Your order has been shipped.')).toEqual([]);
   });

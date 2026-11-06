@@ -17,6 +17,6 @@ const PATTERNS: readonly PhrasePattern[] = [
 export const electricityDisconnection: Rule = {
   id: 'electricity-disconnection',
   check(input) {
-    return findPhrases(input.text, PATTERNS, { type: 'electricity-disconnection', label: 'Power cut threat' });
+    return findPhrases(input.text, PATTERNS, { type: 'electricity-disconnection', label: 'Power cut threat', skip: input.links });
   },
 };
