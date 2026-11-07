@@ -1,6 +1,6 @@
 import type { RedFlag, Severity } from '../../detection';
 
-const SEVERITY_WORDS: Readonly<Record<Severity, string>> = {
+export const SEVERITY_WORDS: Readonly<Record<Severity, string>> = {
   high: 'Strong warning sign',
   medium: 'Warning sign',
   low: 'Mild warning sign',

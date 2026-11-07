@@ -1,7 +1,10 @@
 import { useEffect, useRef } from 'react';
 import type { AnalysisInput, AnalysisResult, Verdict } from '../../detection';
+import { useViewSettings } from '../../view-context';
 import { FlagCard } from './FlagCard';
-import { HighlightedText, type NumberedSpan } from './HighlightedText';
+import { HauntedText, type NumberedFlag } from './ghosts/HauntedText';
+import { HighlightedText } from './HighlightedText';
+import { ScoreCandle } from './ScoreCandle';
 import { VerdictIcon } from './VerdictIcon';
 
 const VERDICT_TEXT: Readonly<Record<Verdict, { title: string; advice: string; className: string }>> = {
@@ -33,22 +36,32 @@ export function ResultPanel({ input, result }: ResultPanelProps) {
     headingRef.current?.focus();
   }, [result]);
 
+  const { view, reducedMotion } = useViewSettings();
+  const haunted = view === 'haunted';
   const verdict = VERDICT_TEXT[result.verdict];
-  const numbered = result.flags.map((flag, i) => ({ flag, number: i + 1 }));
-  const spansFor = (source: 'body' | 'header', attachmentIndex?: number): NumberedSpan[] =>
-    numbered
-      .filter(({ flag }) => flag.source === source && (attachmentIndex === undefined || flag.attachmentIndex === attachmentIndex))
-      .map(({ flag, number }) => ({ start: flag.start, end: flag.end, number }));
+  const numbered: NumberedFlag[] = result.flags.map((flag, i) => ({ flag, number: i + 1 }));
   const attachments = input.attachments ?? [];
-  const headerSpans = spansFor('header');
+  const bodyFlags = numbered.filter(({ flag }) => flag.source === 'body');
+  const headerFlags = numbered.filter(({ flag }) => flag.source === 'header');
   const flaggedAttachments = attachments
     .map((name, index) => ({
       name,
-      spans: numbered
-        .filter(({ flag }) => flag.source === 'attachment' && flag.attachmentIndex === index)
-        .map(({ flag, number }) => ({ start: flag.start, end: flag.end, number })),
+      index,
+      flags: numbered.filter(({ flag }) => flag.source === 'attachment' && flag.attachmentIndex === index),
     }))
-    .filter((a) => a.spans.length > 0);
+    .filter((a) => a.flags.length > 0);
+
+  /** Mortal view shows calm highlights; Haunted view puts a ghost on each flagged span. */
+  const renderText = (text: string, flags: readonly NumberedFlag[], className?: string) =>
+    haunted ? (
+      <HauntedText text={text} flags={flags} className={className} />
+    ) : (
+      <HighlightedText
+        text={text}
+        spans={flags.map(({ flag, number }) => ({ start: flag.start, end: flag.end, number }))}
+        className={className}
+      />
+    );
 
   return (
     <section className="result-panel" aria-labelledby="result-heading">
@@ -59,10 +72,25 @@ export function ResultPanel({ input, result }: ResultPanelProps) {
         <VerdictIcon verdict={result.verdict} />
         <p className="verdict-title">{verdict.title}</p>
       </div>
-      <p className="score-text">
-        Haunt score: <strong>{result.score}</strong> out of 100
-      </p>
-      <meter className="score-meter" min={0} max={100} low={25} high={60} optimum={0} value={result.score} aria-label="Haunt score" />
+      <div className="score">
+        {haunted && <ScoreCandle key={`${result.score}-${result.flags.length}`} score={result.score} animate={!reducedMotion} />}
+        <div className="score-copy">
+          <p className="score-text">
+            Haunt score: <strong>{result.score}</strong> out of 100
+          </p>
+          {haunted && <p className="candle-caption">The candle burns down as the haunt score rises.</p>}
+        </div>
+      </div>
+      <meter
+        className={haunted ? 'score-meter visually-hidden' : 'score-meter'}
+        min={0}
+        max={100}
+        low={25}
+        high={60}
+        optimum={0}
+        value={result.score}
+        aria-label="Haunt score"
+      />
       <p className="verdict-advice">{verdict.advice}</p>
       <p className="disclaimer">
         Phantom Inbox looks for known warning signs. It can be wrong, so this is never a guarantee that a message is safe or a scam.
@@ -73,13 +101,16 @@ export function ResultPanel({ input, result }: ResultPanelProps) {
       ) : (
         <>
           <h3>Where the warning signs are</h3>
-          <div className="checked-message">
-            <HighlightedText text={input.text} spans={spansFor('body')} />
-          </div>
-          {headerSpans.length > 0 && (
+          {haunted && (
+            <p className="ghost-hint">
+              Each ghost sits on the words it is warning about. Press a ghost to hear why. Point at or focus a link ghost to hear its True Name.
+            </p>
+          )}
+          <div className="checked-message">{renderText(input.text, bodyFlags)}</div>
+          {headerFlags.length > 0 && (
             <div className="checked-details">
               <h4>Email details</h4>
-              <HighlightedText text={result.headerText} spans={headerSpans} className="message-text header-text" />
+              {renderText(result.headerText, headerFlags, 'message-text header-text')}
             </div>
           )}
           {flaggedAttachments.length > 0 && (
@@ -87,9 +118,7 @@ export function ResultPanel({ input, result }: ResultPanelProps) {
               <h4>Attachments</h4>
               <ul className="attachment-list">
                 {flaggedAttachments.map((a) => (
-                  <li key={a.name}>
-                    <HighlightedText text={a.name} spans={a.spans} className="attachment-name" />
-                  </li>
+                  <li key={`${a.index}-${a.name}`}>{renderText(a.name, a.flags, 'attachment-name')}</li>
                 ))}
               </ul>
             </div>

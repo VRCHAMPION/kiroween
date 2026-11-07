@@ -43,6 +43,8 @@ export interface RedFlag {
   text: string;
   /** Index into input.attachments when source is 'attachment'. */
   attachmentIndex?: number;
+  /** The real address a link opens, for link flags found in the message. */
+  destination?: string;
 }
 
 export interface AnalysisInput {

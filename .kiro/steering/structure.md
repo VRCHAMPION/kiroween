@@ -14,7 +14,9 @@ inclusion: always
 - `src/features/`: one folder per screen, such as `possession-check/`; feature code may import the detection engine.
 - `src/email/`: the `.eml` file parser, which works on strings only.
 - `src/data/`: sample messages used by the screens and tests.
-- `docs/`: project documents, including `docs/kiro-journal.md`.
+- `docs/`: project documents, including `docs/kiro-journal.md` and `docs/perf-mobile.md`.
+- `scripts/`: developer tools that are not shipped, such as the mobile performance check.
+- `public/`: files copied unchanged into the build, such as font licences.
 - `.kiro/steering/`: guidance files that Kiro reads in every session.
 - `.kiro/hooks/`: Kiro automations, one JSON file per hook group.
 - `.kiro/specs/`: requirements, design and task lists for each feature.

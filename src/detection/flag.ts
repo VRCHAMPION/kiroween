@@ -9,6 +9,7 @@ export interface FlagParts {
   start: number;
   end: number;
   attachmentIndex?: number;
+  destination?: string;
 }
 
 /** Builds a red flag and copies the exact flagged words out of the source string. */
@@ -27,6 +28,9 @@ export function makeFlag(parts: FlagParts, sourceText: string): RedFlag {
   };
   if (parts.attachmentIndex !== undefined) {
     flag.attachmentIndex = parts.attachmentIndex;
+  }
+  if (parts.destination !== undefined) {
+    flag.destination = parts.destination;
   }
   return flag;
 }

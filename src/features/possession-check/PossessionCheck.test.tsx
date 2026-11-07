@@ -254,3 +254,90 @@ describe('Possession Check: keyboard and accessibility', () => {
     expect(await violations(container)).toEqual([]);
   });
 });
+describe('Possession Check: Haunted view', () => {
+  const ghosts = () => screen.queryAllByRole('button', { name: /^Red flag \d+ / });
+  const candle = () => document.querySelector('[data-testid="score-candle"]');
+
+  async function checkSample(user: ReturnType<typeof userEvent.setup>, id: string) {
+    await user.selectOptions(screen.getByLabelText('Try a sample'), id);
+    await user.click(checkButton());
+  }
+
+  it('turns every red flag into a ghost and shows the score candle', async () => {
+    window.localStorage.setItem('phantom-inbox:view', 'haunted');
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.getByTestId('haunted-backdrop').getAttribute('aria-hidden')).toBe('true');
+    await checkSample(user, 'scam-paypal-homoglyph');
+    const cards = resultPanel().querySelectorAll('.flag-card');
+    expect(ghosts()).toHaveLength(cards.length);
+    expect(candle()?.getAttribute('aria-hidden')).toBe('true');
+    expect(within(resultPanel()).getByRole('meter', { name: 'Haunt score' })).toBeTruthy();
+    expect(within(resultPanel()).getByText('The candle burns down as the haunt score rises.')).toBeTruthy();
+    expect(screen.getAllByTestId('lookalike-char').map((e) => e.textContent)).toContain('1');
+  });
+
+  it('shows no ghosts, candle or backdrop in Mortal view', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await checkSample(user, 'scam-paypal-homoglyph');
+    expect(ghosts()).toHaveLength(0);
+    expect(candle()).toBeNull();
+    expect(screen.queryByTestId('haunted-backdrop')).toBeNull();
+    expect(resultPanel().querySelectorAll('mark').length).toBeGreaterThan(0);
+  });
+
+  it('burns the candle lower for a higher score', async () => {
+    window.localStorage.setItem('phantom-inbox:view', 'haunted');
+    const user = userEvent.setup();
+    render(<App />);
+    await checkSample(user, 'genuine-family-message');
+    const safeWax = Number(candle()?.getAttribute('data-wax'));
+    await checkSample(user, 'scam-digital-arrest');
+    const scamWax = Number(candle()?.getAttribute('data-wax'));
+    expect(safeWax).toBe(96);
+    expect(scamWax).toBeLessThan(safeWax);
+  });
+
+  it('melts the candle only when motion is allowed', async () => {
+    window.localStorage.setItem('phantom-inbox:view', 'haunted');
+    const user = userEvent.setup();
+    const first = render(<App />);
+    await checkSample(user, 'scam-kyc-expiry');
+    expect(candle()?.querySelectorAll('animate, animateTransform').length).toBeGreaterThan(0);
+    first.unmount();
+
+    window.localStorage.setItem('phantom-inbox:reduced-motion', 'true');
+    render(<App />);
+    await checkSample(user, 'scam-kyc-expiry');
+    expect(candle()?.querySelectorAll('animate, animateTransform')).toHaveLength(0);
+    expect(document.querySelector('.app')?.getAttribute('data-reduced-motion')).toBe('true');
+  });
+
+  it('keeps the result when switching views and remembers the view', async () => {
+    const user = userEvent.setup();
+    const first = render(<App />);
+    await checkSample(user, 'scam-bank-link-mismatch');
+    const toggle = screen.getByRole('switch', { name: 'Haunted view' });
+    await user.click(toggle);
+    expect(within(resultPanel()).getByText('Likely scam')).toBeTruthy();
+    expect(ghosts().length).toBeGreaterThan(0);
+    expect(messageBox().value).toContain('Vandana Bank');
+    first.unmount();
+
+    render(<App />);
+    expect(document.querySelector('.app')?.getAttribute('data-view')).toBe('haunted');
+    expect(screen.getByRole('switch', { name: 'Haunted view' }).getAttribute('aria-checked')).toBe('true');
+  });
+
+  it('has no axe violations with a ghost whisper open', async () => {
+    window.localStorage.setItem('phantom-inbox:view', 'haunted');
+    const user = userEvent.setup();
+    const { container } = render(<App />);
+    await checkSample(user, 'scam-bank-link-mismatch');
+    const [ghost] = ghosts();
+    await user.click(ghost);
+    expect(ghost.getAttribute('aria-expanded')).toBe('true');
+    expect(await violations(container)).toEqual([]);
+  });
+});

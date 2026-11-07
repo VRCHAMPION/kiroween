@@ -23,6 +23,7 @@ export const riskyTld: Rule = {
             source: 'body',
             start: link.hostStart,
             end: link.hostEnd,
+            destination: link.url,
           },
           input.text,
         ),

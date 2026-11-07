@@ -15,6 +15,8 @@ inclusion: always
 - Testing Library: renders components and simulates user actions in tests.
 - axe-core: automatic accessibility checks in tests.
 - ESLint: static checks for code problems.
+- @fontsource/creepster: bundles the Creepster heading font (SIL Open Font License 1.1) so no font loads from another origin.
+- puppeteer-core: drives an installed Chrome or Edge for the mobile performance check, `node scripts/perf-mobile.mjs`.
 
 ## Scripts
 

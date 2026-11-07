@@ -468,8 +468,8 @@ describe('README', () => {
     expect(doc.includes(phrase), `README: missing ${label}`).toBe(true);
   });
 
-  it.each(['Possession Check', 'Exorcism', 'S\u00e9ance'])('README marks %s as planned', (feature) => {
-    expect(doc.split(/\r?\n/).some((l) => l.includes(feature) && l.includes('(planned)')), `README: ${feature}`).toBe(true);
+  it.each(['Possession Check', 'Exorcism', 'S\u00e9ance'])('README marks %s as available or planned', (feature) => {
+    expect(doc.split(/\r?\n/).some((l) => l.includes(feature) && /\((available|planned)\)/.test(l)), `README: ${feature}`).toBe(true);
   });
 
   it('README commands exist in package.json', () => {

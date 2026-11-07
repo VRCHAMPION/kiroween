@@ -2,7 +2,7 @@
  * Look-alike characters folded to the Latin letter they imitate.
  * Keys are lower-case because the text is lower-cased first.
  */
-const CONFUSABLES: Readonly<Record<string, string>> = {
+export const CONFUSABLES: Readonly<Record<string, string>> = {
   // Cyrillic
   '\u0430': 'a',
   '\u0435': 'e',

@@ -1,0 +1,490 @@
+/*
+ * Haunted view. Colours come from tokens only. Every continuous animation changes only
+ * transform or opacity so phones can run it on the compositor. Text always sits on an
+ * opaque panel, so the fog and the mansion never lower text contrast.
+ */
+
+/* ---------- Content sits above the backdrop ---------- */
+[data-view='haunted'] > header,
+[data-view='haunted'] > main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Heading font: h1 to h3 only ---------- */
+[data-view='haunted'] h1,
+[data-view='haunted'] h2,
+[data-view='haunted'] h3 {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+}
+
+[data-view='haunted'] h1 {
+  font-size: calc(var(--font-size-heading) * 1.45);
+  text-shadow:
+    0 0 0.3em color-mix(in srgb, var(--color-accent-flag) 55%, transparent),
+    0 0.06em 0 var(--color-mansion);
+}
+
+[data-view='haunted'] h2 {
+  font-size: calc(var(--font-size-heading) * 1.1);
+}
+
+/* ---------- Backdrop: sky, stars, moon, bats, mansion, fog ---------- */
+.haunted-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-bottom) 70%, var(--color-mansion) 100%);
+}
+
+.haunted-stars {
+  position: absolute;
+  inset: 0 0 38% 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 6% 12%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 14% 34%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1.5px 1.5px at 23% 8%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 31% 26%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(2px 2px at 42% 14%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 51% 38%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1.5px 1.5px at 58% 6%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 66% 30%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1.5px 1.5px at 74% 18%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 83% 44%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(2px 2px at 91% 10%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 96% 32%, var(--color-moon) 60%, transparent 70%);
+  opacity: 0.75;
+}
+
+.haunted-stars-twinkle {
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 22%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 27% 16%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1.5px 1.5px at 46% 28%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 62% 12%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1.5px 1.5px at 79% 36%, var(--color-moon) 60%, transparent 70%),
+    radial-gradient(1px 1px at 88% 24%, var(--color-moon) 60%, transparent 70%);
+  animation: twinkle 4.5s ease-in-out infinite alternate;
+}
+
+.haunted-moon {
+  position: absolute;
+  top: 7vh;
+  right: 9vw;
+  width: clamp(56px, 11vw, 120px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 36%, color-mix(in srgb, var(--color-sky-bottom) 20%, transparent) 0 9%, transparent 10%),
+    radial-gradient(circle at 62% 60%, color-mix(in srgb, var(--color-sky-bottom) 16%, transparent) 0 13%, transparent 14%),
+    radial-gradient(circle at 70% 28%, color-mix(in srgb, var(--color-sky-bottom) 14%, transparent) 0 6%, transparent 7%),
+    radial-gradient(circle at 40% 40%, var(--color-moon), color-mix(in srgb, var(--color-moon) 78%, var(--color-sky-bottom)) 76%);
+  box-shadow: 0 0 40px 8px color-mix(in srgb, var(--color-moon) 22%, transparent);
+}
+
+.haunted-moon::after {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-moon) 16%, transparent), transparent 62%);
+  animation: moon-breathe 9s ease-in-out infinite alternate;
+}
+
+.haunted-bat {
+  position: absolute;
+  top: 14vh;
+  left: 0;
+  animation: bat-flight 19s linear infinite;
+}
+
+.haunted-bat svg {
+  display: block;
+  fill: color-mix(in srgb, var(--color-moon) 28%, var(--color-mansion));
+}
+
+.bat-2 {
+  top: 23vh;
+  animation-duration: 27s;
+  animation-delay: -9s;
+}
+
+.bat-3 {
+  top: 8vh;
+  animation-duration: 34s;
+  animation-delay: -21s;
+}
+
+.bat-wings {
+  transform-origin: 50% 40%;
+  animation: bat-flap 0.3s ease-in-out infinite alternate;
+}
+
+.bat-3 .bat-wings {
+  animation-duration: 0.36s;
+}
+
+.haunted-mansion,
+.m-lights {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: max(100%, 760px);
+  height: auto;
+  transform: translateX(-50%);
+}
+
+.haunted-mansion .m-solid {
+  fill: var(--color-mansion);
+}
+
+.haunted-mansion .m-tree {
+  fill: none;
+  stroke: var(--color-mansion);
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.haunted-mansion .m-trunk {
+  stroke-width: 14;
+}
+
+.haunted-mansion .m-window {
+  fill: color-mix(in srgb, var(--color-sky-bottom) 55%, var(--color-mansion));
+}
+
+.haunted-mansion .m-lit-base {
+  fill: color-mix(in srgb, var(--color-candle) 45%, var(--color-mansion));
+}
+
+.m-lights .m-lit {
+  fill: var(--color-candle);
+}
+
+.m-lights-a {
+  animation: window-flicker 6s linear infinite;
+}
+
+.m-lights-b {
+  animation: window-flicker 8.5s linear infinite -2s;
+}
+
+.m-lights-c {
+  animation: window-flicker 11s linear infinite -5s;
+}
+
+.m-lights-d {
+  animation: window-flicker 7.2s linear infinite -3.5s;
+}
+
+.m-lights .m-pane,
+.haunted-mansion .m-rail,
+.haunted-mansion .m-cross {
+  fill: none;
+  stroke: var(--color-mansion);
+}
+
+.m-lights .m-pane {
+  stroke-width: 2;
+}
+
+.haunted-mansion .m-rail {
+  stroke-width: 3;
+}
+
+.haunted-mansion .m-cross {
+  stroke-width: 6;
+}
+
+.haunted-mansion .m-door {
+  fill: color-mix(in srgb, var(--color-candle) 35%, var(--color-mansion));
+}
+
+.haunted-fog {
+  position: absolute;
+  left: 0;
+  bottom: -6vh;
+  width: 200%;
+  height: 42vh;
+  background:
+    radial-gradient(ellipse 17% 42% at 18% 62%, color-mix(in srgb, var(--color-fog) var(--fog-strength), transparent), transparent 72%),
+    radial-gradient(ellipse 15% 34% at 50% 40%, color-mix(in srgb, var(--color-fog) var(--fog-strength), transparent), transparent 72%),
+    radial-gradient(ellipse 18% 46% at 80% 66%, color-mix(in srgb, var(--color-fog) var(--fog-strength), transparent), transparent 72%);
+  background-size: 50% 100%;
+  background-repeat: repeat-x;
+  animation: fog-drift 80s linear infinite;
+}
+
+.fog-front {
+  bottom: -12vh;
+  height: 32vh;
+  animation-duration: 52s;
+  animation-direction: reverse;
+}
+
+/* ---------- Candle-lit panels ---------- */
+[data-view='haunted'] .app-header,
+[data-view='haunted'] .possession-check,
+[data-view='haunted'] .result-panel,
+[data-view='haunted'] .flag-card {
+  position: relative;
+  isolation: isolate;
+  border-style: solid;
+  border-color: var(--color-border);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-candle) 25%, transparent),
+    0 18px 44px -18px color-mix(in srgb, var(--color-candle) 40%, transparent);
+}
+
+[data-view='haunted'] .app-header,
+[data-view='haunted'] .possession-check {
+  padding: var(--space-3);
+  border-width: 2px;
+  background: var(--color-surface);
+}
+
+[data-view='haunted'] .result-panel {
+  border-width: 2px;
+  background: var(--color-bg);
+}
+
+[data-view='haunted'] .flag-card {
+  border-width: 2px 2px 2px 8px;
+  background: var(--color-surface);
+}
+
+/* Warm glow inside each panel, behind its content. At full strength it is the blend the token test checks. */
+[data-view='haunted'] .app-header::before,
+[data-view='haunted'] .possession-check::before,
+[data-view='haunted'] .result-panel::before,
+[data-view='haunted'] .flag-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(130% 90% at 88% 0%, color-mix(in srgb, var(--color-candle) var(--candle-glow-strength), transparent), transparent 70%);
+  animation: candle-flicker 4.3s linear infinite;
+}
+
+[data-view='haunted'] .possession-check::before {
+  animation-duration: 5.1s;
+}
+
+[data-view='haunted'] .result-panel::before {
+  animation-duration: 3.7s;
+}
+
+[data-view='haunted'] .flag-card:nth-child(even)::before {
+  animation-duration: 4.7s;
+  animation-delay: -1.3s;
+}
+
+/* A small flame standing on the top edge of each panel, clear of the text inside. */
+[data-view='haunted'] .app-header::after,
+[data-view='haunted'] .possession-check::after,
+[data-view='haunted'] .result-panel::after,
+[data-view='haunted'] .flag-card::after {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 22px;
+  width: 12px;
+  height: 20px;
+  pointer-events: none;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 50% 72%, var(--color-moon) 0 18%, var(--color-candle) 44%, transparent 76%);
+  transform-origin: 50% 100%;
+  animation: flame-dance 1.7s ease-in-out infinite alternate;
+}
+
+[data-view='haunted'] .flag-card:nth-child(odd)::after {
+  animation-duration: 1.3s;
+  animation-delay: -0.6s;
+}
+
+/* Inner surfaces stay opaque and calm. */
+[data-view='haunted'] .settings,
+[data-view='haunted'] .email-details,
+[data-view='haunted'] .dropzone,
+[data-view='haunted'] .verdict,
+[data-view='haunted'] .checked-message,
+[data-view='haunted'] .checked-details,
+[data-view='haunted'] .message-box,
+[data-view='haunted'] .field select {
+  border-radius: 8px;
+  background: var(--color-bg);
+}
+
+[data-view='haunted'] .button,
+[data-view='haunted'] .switch {
+  border-radius: 999px;
+}
+
+[data-view='haunted'] .button-primary {
+  background: var(--color-text);
+  box-shadow: 0 0 22px -6px color-mix(in srgb, var(--color-candle) 70%, transparent);
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes twinkle {
+  from {
+    opacity: 0.15;
+  }
+
+  to {
+    opacity: 0.95;
+  }
+}
+
+@keyframes moon-breathe {
+  from {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes bat-flight {
+  0% {
+    transform: translate(-12vw, 0);
+  }
+
+  25% {
+    transform: translate(22vw, -3vh);
+  }
+
+  50% {
+    transform: translate(50vw, 2vh);
+  }
+
+  75% {
+    transform: translate(80vw, -4vh);
+  }
+
+  100% {
+    transform: translate(112vw, 0);
+  }
+}
+
+@keyframes bat-flap {
+  from {
+    transform: scaleY(1);
+  }
+
+  to {
+    transform: scaleY(0.35);
+  }
+}
+
+/* Soft and irregular; brightness changes are small, so nothing flashes. */
+@keyframes window-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  7% {
+    opacity: 0.6;
+  }
+
+  10% {
+    opacity: 0.95;
+  }
+
+  46% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 0.68;
+  }
+
+  82% {
+    opacity: 1;
+  }
+}
+
+@keyframes fog-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes candle-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  9% {
+    opacity: 0.84;
+  }
+
+  13% {
+    opacity: 0.97;
+  }
+
+  28% {
+    opacity: 0.72;
+  }
+
+  33% {
+    opacity: 0.92;
+  }
+
+  49% {
+    opacity: 1;
+  }
+
+  63% {
+    opacity: 0.78;
+  }
+
+  67% {
+    opacity: 0.94;
+  }
+
+  82% {
+    opacity: 0.68;
+  }
+
+  87% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes flame-dance {
+  0% {
+    transform: scale(1, 1) rotate(-3deg);
+    opacity: 0.92;
+  }
+
+  50% {
+    transform: scale(0.9, 1.1) rotate(2deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.06, 0.92) rotate(-1deg);
+    opacity: 0.86;
+  }
+}

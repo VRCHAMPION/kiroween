@@ -23,6 +23,7 @@ export const linkTextMismatch: Rule = {
             source: 'body',
             start: anchor.textStart,
             end: anchor.textEnd,
+            destination: anchor.href.url,
           },
           input.text,
         ),

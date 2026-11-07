@@ -17,6 +17,7 @@ export const ipLink: Rule = {
             source: 'body',
             start: link.start,
             end: link.end,
+            destination: link.url,
           },
           input.text,
         ),

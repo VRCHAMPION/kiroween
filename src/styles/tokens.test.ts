@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { contrastRatio } from './contrast';
+import { contrastRatio, parseHex } from './contrast';
 
 type View = 'mortal' | 'haunted';
 
@@ -43,6 +43,19 @@ const REQUIRED = [
   '--space-2',
   '--space-3',
   '--space-4',
+  '--font-family-heading',
+  '--color-ghost',
+  '--color-ghost-ink',
+  '--color-ghost-warn',
+  '--color-candle',
+  '--candle-glow-strength',
+  '--color-wax',
+  '--color-sky-top',
+  '--color-sky-bottom',
+  '--color-mansion',
+  '--color-moon',
+  '--color-fog',
+  '--fog-strength',
 ];
 
 const TEXT_PAIRS: [string, string][] = [
@@ -53,6 +66,9 @@ const TEXT_PAIRS: [string, string][] = [
   ['--color-accent-flag', '--color-bg'],
   ['--color-accent-flag', '--color-surface'],
   ['--color-text', '--color-highlight'],
+  ['--color-ghost-ink', '--color-ghost'],
+  ['--color-ghost', '--color-ghost-ink'],
+  ['--color-ghost-warn', '--color-ghost'],
 ];
 
 const BOUNDARY_PAIRS: [string, string][] = [
@@ -70,6 +86,12 @@ const BOUNDARY_PAIRS: [string, string][] = [
   ['--color-bg', '--color-verdict-suspicious'],
   ['--color-bg', '--color-verdict-safe'],
   ['--color-bg', '--color-text'],
+  ['--color-ghost', '--color-bg'],
+  ['--color-ghost', '--color-surface'],
+  ['--color-ghost', '--color-highlight'],
+  ['--color-wax', '--color-bg'],
+  ['--color-focus', '--color-ghost-ink'],
+  ['--color-ghost-ink', '--color-ghost'],
 ];
 
 const px = (value: string) => parseFloat(value.replace('px', ''));
@@ -97,5 +119,49 @@ describe.each<View>(['mortal', 'haunted'])('design tokens: %s view', (view) => {
   it.each(BOUNDARY_PAIRS)('boundary pair %s on %s is at least 3:1', (fg, bg) => {
     const ratio = contrastRatio(tokens[fg], tokens[bg]);
     expect(ratio, `${view}: ${fg} on ${bg} = ${ratio.toFixed(2)}`).toBeGreaterThanOrEqual(3);
+  });
+});
+/** Mixes `amount` (0 to 1) of colour `b` into colour `a`, like CSS color-mix in sRGB. */
+function blend(a: string, b: string, amount: number): string {
+  const [ar, ag, ab] = parseHex(a);
+  const [br, bg, bb] = parseHex(b);
+  const mix = (x: number, y: number) => Math.round(x + (y - x) * amount);
+  return '#' + [mix(ar, br), mix(ag, bg), mix(ab, bb)].map((v) => v.toString(16).padStart(2, '0')).join('');
+}
+
+const percent = (value: string) => parseFloat(value.replace('%', '')) / 100;
+
+describe.each<View>(['mortal', 'haunted'])('candle glow at full strength: %s view', (view) => {
+  const tokens = parseTokens(view);
+  const strength = percent(tokens['--candle-glow-strength']);
+
+  it('has a glow strength between 0% and 20%', () => {
+    expect(strength).toBeGreaterThanOrEqual(0);
+    expect(strength).toBeLessThanOrEqual(0.2);
+  });
+
+  // Panels in Haunted view use surface or bg; the glow tints them from the top corner.
+  describe.each(['--color-surface', '--color-bg'])('on %s', (panel) => {
+    const lit = blend(tokens[panel], tokens['--color-candle'], strength);
+
+    it.each(['--color-text', '--color-text-muted', '--color-accent-flag'])('%s keeps 4.5:1', (fg) => {
+      const ratio = contrastRatio(tokens[fg], lit);
+      expect(ratio, `${view}: ${fg} on candle-lit ${panel} = ${ratio.toFixed(2)}`).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it.each(['--color-border', '--color-focus', '--color-verdict-scam', '--color-verdict-suspicious', '--color-verdict-safe', '--color-ghost'])(
+      '%s keeps 3:1',
+      (fg) => {
+        const ratio = contrastRatio(tokens[fg], lit);
+        expect(ratio, `${view}: ${fg} on candle-lit ${panel} = ${ratio.toFixed(2)}`).toBeGreaterThanOrEqual(3);
+      },
+    );
+  });
+});
+
+describe('haunted heading font', () => {
+  it('uses Creepster for headings in Haunted view and the body font in Mortal view', () => {
+    expect(parseTokens('haunted')['--font-family-heading']).toMatch(/^'Creepster'/);
+    expect(parseTokens('mortal')['--font-family-heading']).toBe(parseTokens('mortal')['--font-family']);
   });
 });

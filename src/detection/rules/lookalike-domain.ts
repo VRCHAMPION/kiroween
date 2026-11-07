@@ -14,7 +14,7 @@ function reasonFor(match: LookalikeMatch, what: string): string {
     : `This ${what} uses the name ${name}, but it is not ${name}'s official website.`;
 }
 
-function flagFor(host: string, start: number, source: FlagSource, sourceText: string, what: string): RedFlag | undefined {
+function flagFor(host: string, start: number, source: FlagSource, sourceText: string, what: string, destination?: string): RedFlag | undefined {
   const match = findBrandLookalike(host);
   if (!match) {
     return undefined;
@@ -28,6 +28,7 @@ function flagFor(host: string, start: number, source: FlagSource, sourceText: st
       source,
       start,
       end: start + host.length,
+      destination,
     },
     sourceText,
   );
@@ -41,7 +42,7 @@ export const lookalikeDomain: Rule = {
   check(input) {
     const flags: RedFlag[] = [];
     for (const link of input.links) {
-      const flag = flagFor(link.host, link.hostStart, 'body', input.text, 'web address');
+      const flag = flagFor(link.host, link.hostStart, 'body', input.text, 'web address', link.url);
       if (flag) flags.push(flag);
     }
     for (const line of input.headerText.matchAll(SENDER_LINE)) {
