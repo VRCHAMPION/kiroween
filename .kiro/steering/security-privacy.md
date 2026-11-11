@@ -16,6 +16,13 @@ inclusion: always
 - The only values stored in the browser are the view preference (`phantom-inbox:view`, value `mortal` or `haunted`) and the reduced-motion preference (`phantom-inbox:reduced-motion`, value `true` or `false`).
 - If storage fails or is blocked, the app keeps working with defaults and shows no error.
 
+## Screenshots
+
+- Screenshots are read in the browser. The image is passed to the reader as a Blob and never sent anywhere.
+- The OCR worker, engine and language data are served from this site's `ocr/` folder. No CDN is used.
+- The worker starts from a same-origin URL, so the policy needs no `blob:` source.
+- The reader's language cache is off (`cacheMethod: 'none'`), so nothing is written to IndexedDB.
+- Family warnings are built from fixed templates only. They never include words, links or numbers from the checked message.
 ## No tracking
 
 - No analytics, no tracking and no third-party scripts are used.

@@ -1,0 +1,5 @@
+English language data for tesseract.js
+
+Package: @tesseract.js-data/eng 1.0.0 (file 4.0.0_best_int/eng.traineddata.gz), published under the MIT licence.
+The trained model comes from the tesseract-ocr "tessdata_best" project, which is published under the
+Apache License 2.0 (see tesseract.js-core-Apache-2.0.txt in this folder for the licence text).

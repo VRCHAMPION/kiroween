@@ -73,7 +73,7 @@ describe('Possession Check: checking a pasted message', () => {
     expect(marks.join('|')).toContain('https://bit.ly/kyc-99');
     expect(marks.join('|')).toContain('account will be blocked');
 
-    const cards = within(panel).getAllByRole('listitem');
+    const cards = [...panel.querySelectorAll<HTMLElement>('.flag-card')];
     expect(cards.length).toBe(4);
     expect(within(cards[0]).getByRole('heading', { level: 4 }).textContent).toContain('1');
     expect(cards[0].textContent).toContain('KYC has expired');
@@ -237,6 +237,8 @@ describe('Possession Check: keyboard and accessibility', () => {
     expect(document.activeElement).toBe(screen.getByLabelText('Try a sample'));
     await user.tab();
     expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Choose an .eml file' }));
+    await user.tab();
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Choose a screenshot' }));
     await user.tab();
     expect(document.activeElement).toBe(checkButton());
     await user.keyboard('{Enter}');

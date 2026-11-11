@@ -14,7 +14,7 @@ export default tseslint.config(
     rules: reactHooks.configs.recommended.rules,
   },
   {
-    files: ['*.config.{js,ts}', 'csp.ts', 'scripts/**/*.mjs', 'tests/**/*.ts', 'src/**/*.test.{ts,tsx}', 'src/test-setup.ts'],
+    files: ['*.config.{js,ts}', 'csp.ts', 'ocr-assets.ts', 'scripts/**/*.mjs', 'tests/**/*.ts', 'src/**/*.test.{ts,tsx}', 'src/test-setup.ts'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 );

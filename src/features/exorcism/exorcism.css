@@ -1,0 +1,293 @@
+/* Exorcism: next steps. Tokens for colours and spacing; transform and opacity for motion. */
+.exorcism {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-bg);
+  border: 3px solid var(--color-accent-flag);
+}
+
+.exorcism-intro {
+  font-weight: 700;
+}
+
+.exorcism-steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0 0 0 1.6em;
+}
+
+.exorcism-step {
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+}
+
+.exorcism-step::marker {
+  font-weight: 700;
+}
+
+.exorcism-step.is-urgent {
+  border-color: var(--color-accent-flag);
+  border-left-width: 8px;
+}
+
+.step-urgent-tag {
+  display: inline-block;
+  margin-bottom: var(--space-1);
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-accent-flag);
+  font-weight: 700;
+}
+
+.step-title {
+  font-weight: 700;
+}
+
+.step-detail {
+  color: var(--color-text);
+}
+
+.step-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.step-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.step-link:focus-visible,
+.ritual-check input:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.family-warning {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.warning-block {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: 2px dashed var(--color-border);
+}
+
+.warning-label {
+  font-weight: 700;
+}
+
+.warning-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.warning-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ---------- Haunted view: the ritual ---------- */
+.exorcism-ritual {
+  border-color: var(--color-candle);
+  border-radius: 12px;
+}
+
+.exorcism-subtitle {
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.ritual-circle {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(15rem, 80%);
+  aspect-ratio: 1;
+  margin: var(--space-1) auto;
+}
+
+.ritual-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px double var(--color-candle);
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-candle) 18%, transparent), transparent 70%);
+  animation: ritual-turn 40s linear infinite;
+}
+
+.ritual-ring::before,
+.ritual-ring::after {
+  content: '';
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  border: 1px dashed var(--color-candle);
+}
+
+.ritual-ring::after {
+  inset: 30%;
+}
+
+.ritual-ghosts {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  width: 70%;
+}
+
+.ritual-ghost {
+  display: inline-block;
+  animation: ritual-hover 3.2s ease-in-out infinite;
+}
+
+.ritual-ghost:nth-child(2n) {
+  animation-duration: 3.9s;
+  animation-delay: -1.4s;
+}
+
+.ritual-ghost.is-banished {
+  opacity: 0.12;
+  transform: translateY(-14px) scale(0.6);
+  animation: banish 1.2s ease-out;
+}
+
+.ritual-progress:empty {
+  display: none;
+}
+
+.ritual-progress {
+  font-weight: 700;
+}
+
+.ritual-check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  margin-top: var(--space-1);
+  cursor: pointer;
+}
+
+.ritual-check input {
+  width: 24px;
+  height: 24px;
+  accent-color: var(--color-candle);
+}
+
+.exorcism-ritual .exorcism-step {
+  border-radius: 8px;
+}
+
+.exorcism-ritual .exorcism-step.is-read {
+  border-color: var(--color-candle);
+}
+
+/* ---------- Screenshot reading ---------- */
+.screenshot-preview {
+  display: grid;
+  gap: var(--space-1);
+  justify-items: start;
+  margin: 0;
+}
+
+.screenshot-preview img {
+  max-width: min(100%, 18rem);
+  max-height: 22rem;
+  border: 2px solid var(--color-border);
+}
+
+.reading-state {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-2);
+  background: var(--color-bg);
+  border: 2px solid var(--color-focus);
+}
+
+.reading-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.reading-bar progress {
+  flex: 1;
+  height: 1.25rem;
+}
+
+.reading-percent {
+  min-width: 3.5ch;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.reading-spirits {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: 700;
+}
+
+.reading-ghost {
+  display: inline-block;
+  animation: ritual-hover 1.8s ease-in-out infinite;
+}
+
+.reading-ghost .ghost-body {
+  fill: var(--color-ghost);
+}
+
+.reading-ghost .ghost-eye,
+.reading-ghost .ghost-mouth {
+  fill: var(--color-ghost-ink);
+}
+
+@keyframes ritual-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ritual-hover {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes banish {
+  0% {
+    opacity: 1;
+    transform: none;
+  }
+
+  40% {
+    opacity: 0.8;
+    transform: translateY(-4px) scale(1.12);
+  }
+
+  100% {
+    opacity: 0.12;
+    transform: translateY(-14px) scale(0.6);
+  }
+}

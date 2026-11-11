@@ -6,11 +6,29 @@ Phantom Inbox is a scam detector for emails, SMS and WhatsApp messages. It focus
 
 ## Features
 
-- **Possession Check** (available): paste a message, pick a sample or open an .eml file, and see which words look like a scam and why.
-- **Exorcism** (planned): get clear next steps and a short warning to share with family.
+- **Possession Check** (available): paste a message, add a screenshot, pick a sample or open an .eml file, and see which words look like a scam and why.
+- **Exorcism** (available): after a scam or suspicious result, get clear next steps and a ready-to-copy warning for family in English and Hindi.
 - **Séance** (planned): a training game where you decide whether a message is real or a scam.
 
 The app has two views. Mortal view is calm, high contrast and large text. Haunted view shows each red flag as a ghost sitting on the exact words it is about.
+
+## Screenshots
+
+Most scams reach elders on SMS or WhatsApp, where there is no file to save. Take a screenshot of the chat instead.
+
+- Press "Choose a screenshot", drop the picture on the box, or paste it with Ctrl+V.
+- The words are read on your own device with tesseract.js. The reader is loaded only the first time you add a screenshot, and it comes from this site, not from another server.
+- You see the text that was read, so you can fix any mistakes. The check runs only when you press "Check this message".
+- Nothing is stored: the reader's own cache is switched off.
+
+## Exorcism: what to do now
+
+After a check finds a likely scam or a suspicious message, Phantom Inbox lists what to do in plain words.
+
+- Every time: do not reply, do not click links or open files, never share an OTP, PIN or password and do not pay, block the sender, and report it at [cybercrime.gov.in](https://cybercrime.gov.in) or by calling 1930.
+- More steps depend on the trick found. For example, a remote-access app means "uninstall it now and call your bank", and a "digital arrest" message means "police never arrest anyone on a video call".
+- A short warning for your family is ready to copy or share, in simple English and in Hindi. It is made only from fixed wording, so nothing from the scam message is copied into it.
+- In Haunted view the steps become an exorcism ritual: tick each step as you read it and the ghosts fade away. The steps stay word for word the same.
 
 ## Haunted view
 
@@ -51,11 +69,15 @@ npm run build
 
 After `npm run build`, run `node scripts/perf-mobile.mjs` to test the built site in an installed Chrome or Edge on a simulated phone (4x slower CPU, slow 4G). It writes its results to [docs/perf-mobile.md](docs/perf-mobile.md).
 
+Run `node scripts/ocr-check.mjs` to read two made-up chat screenshots through the built site, under its Content-Security-Policy. It checks the text read, that no other origin is contacted and that nothing is stored, and writes [docs/ocr-check.md](docs/ocr-check.md).
+
 ## Assets and licences
 
 No copyrighted images or sounds are used, and nothing loads from another site.
 
 - **Creepster** heading font by Sideshow (Font Diner), under the SIL Open Font License 1.1. It is bundled from the npm package `@fontsource/creepster` and used for headings in Haunted view only. Licence: [public/licenses/creepster-OFL.txt](public/licenses/creepster-OFL.txt).
+- **tesseract.js** and **tesseract.js-core** (the screenshot reader and its WebAssembly engine), under the Apache License 2.0. They are bundled from npm and served from this site's `ocr/` folder. Licences: [public/licenses/tesseract.js-Apache-2.0.txt](public/licenses/tesseract.js-Apache-2.0.txt) and [public/licenses/tesseract.js-core-Apache-2.0.txt](public/licenses/tesseract.js-core-Apache-2.0.txt).
+- **English language data** for tesseract (`@tesseract.js-data/eng`, MIT, with the model from tesseract-ocr's tessdata under Apache 2.0). Notes: [public/licenses/tesseract-eng-data.txt](public/licenses/tesseract-eng-data.txt).
 - Everything else, including the mansion, moon, stars, bats, fog, ghosts, candles and verdict icons, is CSS and inline SVG written for this project and shared under the MIT licence below.
 - There are no sounds.
 

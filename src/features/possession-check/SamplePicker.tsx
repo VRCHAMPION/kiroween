@@ -5,13 +5,14 @@ const CHANNEL: Readonly<Record<Channel, string>> = { email: 'Email', sms: 'SMS',
 interface SamplePickerProps {
   value: string;
   onPick: (id: string) => void;
+  disabled?: boolean;
 }
 
-export function SamplePicker({ value, onPick }: SamplePickerProps) {
+export function SamplePicker({ value, onPick, disabled = false }: SamplePickerProps) {
   return (
     <div className="field">
       <label htmlFor="sample-picker">Try a sample</label>
-      <select id="sample-picker" value={value} onChange={(event) => onPick(event.target.value)}>
+      <select id="sample-picker" value={value} disabled={disabled} onChange={(event) => onPick(event.target.value)}>
         <option value="">Choose a sample message</option>
         {SAMPLES.map((sample) => (
           <option key={sample.id} value={sample.id}>

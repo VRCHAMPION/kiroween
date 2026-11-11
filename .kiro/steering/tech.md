@@ -17,6 +17,7 @@ inclusion: always
 - ESLint: static checks for code problems.
 - @fontsource/creepster: bundles the Creepster heading font (SIL Open Font License 1.1) so no font loads from another origin.
 - puppeteer-core: drives an installed Chrome or Edge for the mobile performance check, `node scripts/perf-mobile.mjs`.
+- tesseract.js: reads screenshots in the browser. It is loaded only when a screenshot is added, from this site's `ocr/` folder, with `workerBlobURL: false` and `cacheMethod: 'none'`.
 
 ## Scripts
 

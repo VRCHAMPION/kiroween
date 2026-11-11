@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { AnalysisInput, AnalysisResult, Verdict } from '../../detection';
 import { useViewSettings } from '../../view-context';
+import { Exorcism } from '../exorcism/Exorcism';
 import { FlagCard } from './FlagCard';
 import { HauntedText, type NumberedFlag } from './ghosts/HauntedText';
 import { HighlightedText } from './HighlightedText';
@@ -95,6 +96,8 @@ export function ResultPanel({ input, result }: ResultPanelProps) {
       <p className="disclaimer">
         Phantom Inbox looks for known warning signs. It can be wrong, so this is never a guarantee that a message is safe or a scam.
       </p>
+
+      <Exorcism key={result.flags.map((f) => f.id).join('|') + result.score} result={result} />
 
       {result.flags.length === 0 ? (
         <p className="no-flags">We found no warning signs in this message.</p>

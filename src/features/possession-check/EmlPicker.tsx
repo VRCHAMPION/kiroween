@@ -6,6 +6,7 @@ export const MAX_EML_BYTES = 5 * 1024 * 1024;
 interface EmlPickerProps {
   onLoaded: (email: ParsedEmail, fileName: string) => void;
   onError: (message: string) => void;
+  disabled?: boolean;
 }
 
 function readText(file: File): Promise<string> {
@@ -20,7 +21,7 @@ function readText(file: File): Promise<string> {
   });
 }
 
-export function EmlPicker({ onLoaded, onError }: EmlPickerProps) {
+export function EmlPicker({ onLoaded, onError, disabled = false }: EmlPickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
 
@@ -49,6 +50,7 @@ export function EmlPicker({ onLoaded, onError }: EmlPickerProps) {
   const onDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setDragging(false);
+    if (disabled) return;
     void load(event.dataTransfer?.files?.[0]);
   };
 
@@ -64,7 +66,7 @@ export function EmlPicker({ onLoaded, onError }: EmlPickerProps) {
       onDrop={onDrop}
     >
       <p className="dropzone-text">Have the email saved as a file? Drop the .eml file here, or</p>
-      <button type="button" className="button" onClick={() => inputRef.current?.click()}>
+      <button type="button" className="button" disabled={disabled} onClick={() => inputRef.current?.click()}>
         Choose an .eml file
       </button>
       <input

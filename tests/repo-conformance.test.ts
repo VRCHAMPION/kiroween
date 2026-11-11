@@ -534,3 +534,24 @@ describe('source scan', () => {
     }
   });
 });
+describe('third-party licences', () => {
+  const doc = read('README.md');
+  it.each([
+    ['Creepster', 'public/licenses/creepster-OFL.txt'],
+    ['tesseract.js', 'public/licenses/tesseract.js-Apache-2.0.txt'],
+    ['tesseract.js-core', 'public/licenses/tesseract.js-core-Apache-2.0.txt'],
+    ['English language data', 'public/licenses/tesseract-eng-data.txt'],
+  ])('README lists %s and its licence file ships in the build', (name, file) => {
+    expect(doc.includes(name), `README: missing ${name}`).toBe(true);
+    expect(doc.includes(`(${file})`), `README: no link to ${file}`).toBe(true);
+    expect(exists(file), `${file} is missing`).toBe(true);
+  });
+
+  it('serves every OCR asset from a file that exists in node_modules', async () => {
+    const { OCR_ASSETS } = await import('../ocr-assets');
+    for (const asset of OCR_ASSETS) {
+      expect(asset.path.startsWith('ocr/'), asset.path).toBe(true);
+      expect(exists(`node_modules/${asset.source}`), `missing node_modules/${asset.source}`).toBe(true);
+    }
+  });
+});
