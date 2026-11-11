@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { ReducedMotionToggle } from './components/ReducedMotionToggle';
 import { ViewToggle } from './components/ViewToggle';
 import { PossessionCheck } from './features/possession-check/PossessionCheck';
+import { warmDetection } from './features/possession-check/warm';
 import {
   readManualReducedMotion,
   readView,
@@ -42,6 +43,10 @@ export function App() {
   const reduced = resolveReducedMotion(system, manual);
   const settings = useMemo(() => ({ view, reducedMotion: reduced }), [view, reduced]);
 
+  // Start loading the heavy checking data once the page is idle.
+  useEffect(() => {
+    warmDetection();
+  }, []);
   useEffect(() => {
     if (switched.current) document.getElementById(SCREEN_HEADING[screen])?.focus();
   }, [screen, seanceReady]);

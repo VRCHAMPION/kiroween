@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "phishing-forensics",
+  "version": "1.0.0",
+  "description": "Work on the Phantom Inbox scam detection engine: its rules, homograph and typosquat checks, generated data, tests and evaluation script",
+  "author": {
+    "name": "Phantom Inbox"
+  },
+  "keywords": ["phishing", "homograph", "punycode", "typosquat", "scam", "confusables", "lookalike", "eval"],
+  "license": "MIT"
+}

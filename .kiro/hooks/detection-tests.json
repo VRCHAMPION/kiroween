@@ -1,0 +1,14 @@
+{
+    "version":  "v1",
+    "hooks":  [
+                  {
+                      "name":  "detection-tests",
+                      "trigger":  "PostFileSave",
+                      "matcher":  "(^|[/\\\\])src[/\\\\]detection[/\\\\].*\\.tsx?$",
+                      "action":  {
+                                     "type":  "command",
+                                     "command":  "npx vitest --run src/detection"
+                                 }
+                  }
+              ]
+}

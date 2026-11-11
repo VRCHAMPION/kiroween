@@ -16,3 +16,6 @@ test-results/
 .vscode/
 Thumbs.db
 .DS_Store
+
+# Local evaluation corpora (downloaded by the developer, never committed)
+eval-data/

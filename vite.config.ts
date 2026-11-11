@@ -74,11 +74,19 @@ export default defineConfig({
       },
     },
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        // The lazy detection data (Public Suffix List, confusables, famous sites) gets a recognisable name for the size report.
+        chunkFileNames: (chunk) => (chunk.name === 'data-bundle' ? 'assets/detection-data-[hash].js' : 'assets/[name]-[hash].js'),
+      },
+    },
+  },
   preview: { host: '127.0.0.1', port: 4173, strictPort: true },
   test: {
     environment: 'jsdom',
     testTimeout: 15000,
     setupFiles: ['./src/test-setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.ts', 'scripts/**/*.test.ts'],
   },
 });

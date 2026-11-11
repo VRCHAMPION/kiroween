@@ -1,4 +1,7 @@
+import { isIpHost, parseDomain } from './domain';
 import type { AnchorLink, Link } from './types';
+
+export { isIpHost };
 
 /** Endings accepted for links written without http:// (keeps "Mr.Mehta" from being a link). */
 const KNOWN_TLDS = new Set([
@@ -8,22 +11,11 @@ const KNOWN_TLDS = new Set([
   'store', 'shop', 'club', 'ly', 'gl', 'gd', 'at', 'cc', 'sbi', 'bank', 'example', 'gov', 'id',
 ]);
 
-/** Second-level labels used under two-letter country endings, such as co.in or gov.in. */
-const SECOND_LEVEL = new Set(['co', 'com', 'net', 'org', 'gov', 'ac', 'edu', 'nic', 'res', 'gen', 'firm', 'ind', 'bank']);
-
 const SCHEME_URL = /\bhttps?:\/\/[^\s<>"'`]+/gi;
 const BARE_IP = /(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?::\d{2,5})?(?:\/[^\s<>"'`]*)?/g;
 const BARE_DOMAIN =
   /(?<![@\w.\-/\\])(?:[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?\.)+\p{L}{2,24}(?::\d{2,5})?(?:\/[^\s<>"'`]*)?/giu;
 const TRAILING = /[.,;:!?)\]}'"]+$/;
-
-export function isIpHost(host: string): boolean {
-  if (/^\[[0-9a-f:.]+\]$/i.test(host)) {
-    return true;
-  }
-  const parts = host.split('.');
-  return parts.length === 4 && parts.every((p) => /^\d{1,3}$/.test(p) && Number(p) <= 255);
-}
 
 /** Splits a URL into its host and the host's offset inside the URL, without ever throwing. */
 export function parseHost(url: string): { host: string; offset: number } {
@@ -50,24 +42,14 @@ export function parseHost(url: string): { host: string; offset: number } {
 
 /** Number of labels that form the public ending, for example 1 for "com" and 2 for "co.in". */
 export function suffixLabelCount(labels: readonly string[]): number {
-  const n = labels.length;
-  if (n >= 3 && labels[n - 1].length === 2 && SECOND_LEVEL.has(labels[n - 2])) {
-    return 2;
-  }
-  return 1;
+  const suffix = parseDomain(labels.join('.')).suffix;
+  return suffix === '' ? 1 : suffix.split('.').length;
 }
 
 /** The part of a host that an organisation registers, such as "examplebank.co.in". */
 export function registrableDomain(host: string): string {
-  const lower = host.toLowerCase().replace(/\.$/, '');
-  if (isIpHost(lower)) {
-    return lower;
-  }
-  const labels = lower.split('.');
-  const keep = suffixLabelCount(labels) + 1;
-  return labels.slice(-keep).join('.');
+  return parseDomain(host).registrable;
 }
-
 export function topLevelDomain(host: string): string {
   const labels = host.toLowerCase().split('.');
   return labels[labels.length - 1] ?? '';

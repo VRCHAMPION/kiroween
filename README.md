@@ -79,6 +79,8 @@ npm run build
 - `npm test` runs every test once with `vitest --run`.
 - `npm run build` writes the static site to `dist/`, ready for GitHub Pages, Netlify, Cloudflare Pages or Vercel.
 - `npm run preview` serves the finished build at http://127.0.0.1:4173 with the same security headers as the hosted site.
+- `npm run eval` measures precision and recall of the checker on a local folder of messages (development only). See [docs/EVAL.md](docs/EVAL.md) and [scripts/eval/README.md](scripts/eval/README.md). The corpora are never committed.
+- `npm run gen:confusables` and `npm run gen:brands` regenerate the two data files in `src/detection/data/` (they download at development time only).
 
 ## Performance check
 
@@ -112,16 +114,20 @@ Notes on what is configured:
 - Haunted view on a desktop: [result](docs/screenshots/desktop-haunted-03-result.png) and [Séance end](docs/screenshots/desktop-haunted-09-seance-end.png).
 The Playwright MCP server is set up in `.kiro/settings/mcp.json` so Kiro can drive the same journeys by hand.
 ## Bundle size
-Heavy parts load only when needed. The first page load is the app shell and the checker (about 309 kB, 99 kB compressed). The Séance (12 kB), the Haunted backdrop (4 kB) and the screenshot reader (its own files in `ocr/`, several MB) load the first time they are used. Everything is served from this site.
+Heavy parts load only when needed. The first page load is the app shell and the checker (about 309 kB, 99 kB compressed). The domain data (Public Suffix List, look-alike letters and famous sites) is its own file that loads when the browser is idle, never before first paint. The Séance (12 kB), the Haunted backdrop (4 kB) and the screenshot reader (its own files in `ocr/`, several MB) load the first time they are used. Everything is served from this site.
 ## Assets and licences
 
-No copyrighted images or sounds are used, and nothing loads from another site.
+No copyrighted images or sound files are used, and nothing loads from another site.
 
 - **Creepster** heading font by Sideshow (Font Diner), under the SIL Open Font License 1.1. It is bundled from the npm package `@fontsource/creepster` and used for headings in Haunted view only. Licence: [public/licenses/creepster-OFL.txt](public/licenses/creepster-OFL.txt).
 - **tesseract.js** and **tesseract.js-core** (the screenshot reader and its WebAssembly engine), under the Apache License 2.0. They are bundled from npm and served from this site's `ocr/` folder. Licences: [public/licenses/tesseract.js-Apache-2.0.txt](public/licenses/tesseract.js-Apache-2.0.txt) and [public/licenses/tesseract.js-core-Apache-2.0.txt](public/licenses/tesseract.js-core-Apache-2.0.txt).
 - **English language data** for tesseract (`@tesseract.js-data/eng`, MIT, with the model from tesseract-ocr's tessdata under Apache 2.0). Notes: [public/licenses/tesseract-eng-data.txt](public/licenses/tesseract-eng-data.txt).
 - Everything else, including the mansion, moon, stars, bats, fog, ghosts, candles and verdict icons, is CSS and inline SVG written for this project and shared under the MIT licence below.
-- There are no sounds.
+- **tldts** (MIT) reads the Public Suffix List, whose data is under MPL-2.0. Both are compiled into the lazy `detection-data` file. Licence text: [public/licenses/mpl-2.0.txt](public/licenses/mpl-2.0.txt). Sources: https://github.com/remusao/tldts and https://github.com/publicsuffix/list.
+- **Unicode confusables.txt** (Unicode License v3), reduced to Latin look-alike letters in `src/detection/data/confusables.ts`. Licence: [public/licenses/unicode-license-v3.txt](public/licenses/unicode-license-v3.txt).
+- **Majestic Million** top 1,000 sites (Creative Commons Attribution 3.0, https://creativecommons.org/licenses/by/3.0/), used to spot misspelt copies of famous sites. Majestic subset licensed under CC BY 3.0. Source: https://majestic.com/reports/majestic-million.
+- The full table with versions and evidence is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- The only sound is a soft chime made in code with the Web Audio API (no sound file). It is off by default and has a visible on/off button in the Exorcism.
 
 ## License
 MIT. See [LICENSE](LICENSE).

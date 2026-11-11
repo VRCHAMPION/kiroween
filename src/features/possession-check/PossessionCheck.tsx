@@ -1,6 +1,6 @@
-import { useRef, useState, type ClipboardEvent } from 'react';
+import { useEffect, useRef, useState, type ClipboardEvent } from 'react';
 import { SAMPLES } from '../../data/samples';
-import { analyse, type AnalysisInput, type AnalysisResult } from '../../detection';
+import { analyse, ensureDetectionData, isDetectionDataLoaded, type AnalysisInput, type AnalysisResult } from '../../detection';
 import type { ParsedEmail } from '../../email/parse-eml';
 import { firstImage } from '../../ocr/image-file';
 import { readScreenshot } from '../../ocr/ocr';
@@ -55,6 +55,11 @@ export function PossessionCheck({ ocr = readScreenshot }: PossessionCheckProps) 
   const [notice, setNotice] = useState('');
   const [screenshot, setScreenshot] = useState<Screenshot | undefined>();
   const messageRef = useRef<HTMLTextAreaElement>(null);
+  const [waiting, setWaiting] = useState(false);
+  const latestText = useRef(text);
+  useEffect(() => {
+    latestText.current = text;
+  }, [text]);
 
   const showError = (message: string) => {
     setError(message);
@@ -143,7 +148,7 @@ export function PossessionCheck({ ocr = readScreenshot }: PossessionCheckProps) 
   };
 
   const check = () => {
-    if (shot.reading) return;
+    if (shot.reading || waiting) return;
     if (text.trim() === '' && !details) {
       showError(EMPTY_MESSAGE_ERROR);
       setChecked(undefined);
@@ -156,7 +161,18 @@ export function PossessionCheck({ ocr = readScreenshot }: PossessionCheckProps) 
       attachments: details?.attachments ?? [],
     };
     setError('');
-    setChecked({ input, result: analyse(input) });
+    if (isDetectionDataLoaded()) {
+      setChecked({ input, result: analyse(input) });
+      return;
+    }
+    // The first check can arrive before the checking data has loaded; wait for it, then check the same message.
+    setWaiting(true);
+    setNotice('Getting the checker ready...');
+    void ensureDetectionData().then(() => {
+      setWaiting(false);
+      setNotice('');
+      if (latestText.current === text) setChecked({ input, result: analyse(input) });
+    });
   };
 
   const onPaste = (event: ClipboardEvent<HTMLElement>) => {
@@ -167,7 +183,7 @@ export function PossessionCheck({ ocr = readScreenshot }: PossessionCheckProps) 
   };
 
   return (
-    <section className="possession-check" aria-labelledby="possession-check-heading" aria-busy={shot.reading} onPaste={onPaste}>
+    <section className="possession-check" aria-labelledby="possession-check-heading" aria-busy={shot.reading || waiting} onPaste={onPaste}>
       <h2 id="possession-check-heading" tabIndex={-1}>
         Possession Check
       </h2>
@@ -226,7 +242,7 @@ export function PossessionCheck({ ocr = readScreenshot }: PossessionCheckProps) 
       )}
 
       <div className="check-row">
-        <button type="button" className="button button-primary" disabled={shot.reading} onClick={check}>
+        <button type="button" className="button button-primary" disabled={shot.reading || waiting} onClick={check}>
           Check this message
         </button>
         <p className="privacy-note">

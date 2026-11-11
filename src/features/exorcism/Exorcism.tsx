@@ -2,6 +2,7 @@ import { useId, useRef, useState } from 'react';
 import type { AnalysisResult } from '../../detection';
 import { useViewSettings } from '../../view-context';
 import { GhostIcon } from '../possession-check/ghosts/GhostIcon';
+import { createAudioContext, playChime } from './chime';
 import { exorcismPlan, type FamilyWarning, type Step } from './plan';
 import { banishedCount, MAX_RITUAL_GHOSTS } from './ritual';
 import './exorcism.css';
@@ -49,7 +50,7 @@ function StepBody({ step }: { step: Step }) {
   );
 }
 
-function WarningBlock({ lang, label, text, onCopied }: { lang: 'en' | 'hi'; label: string; text: string; onCopied: (message: string) => void }) {
+function WarningBlock({ lang, label, text, onCopied, onCopySuccess }: { lang: 'en' | 'hi'; label: string; text: string; onCopied: (message: string) => void; onCopySuccess: () => void }) {
   const textRef = useRef<HTMLParagraphElement>(null);
   const name = lang === 'en' ? 'English' : 'Hindi';
   const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
@@ -57,6 +58,7 @@ function WarningBlock({ lang, label, text, onCopied }: { lang: 'en' | 'hi'; labe
   const copy = async () => {
     if (await copyText(text)) {
       onCopied(`${name} warning copied.`);
+      onCopySuccess();
     } else {
       selectContents(textRef.current);
       onCopied(`Your browser did not let us copy, so the ${name} warning is selected. Press Ctrl+C, or long-press and choose Copy.`);
@@ -91,18 +93,19 @@ function WarningBlock({ lang, label, text, onCopied }: { lang: 'en' | 'hi'; labe
   );
 }
 
-function FamilyWarnings({ warning }: { warning: FamilyWarning }) {
+function FamilyWarnings({ warning, onCopySuccess }: { warning: FamilyWarning; onCopySuccess: () => void }) {
   const [status, setStatus] = useState('');
   return (
     <div className="family-warning">
       <h4>Warn your family</h4>
       <p className="hint">Copy this message and send it to your family on WhatsApp or SMS, so they do not fall for the same trick.</p>
-      <WarningBlock lang="en" label="In simple English" text={warning.en} onCopied={setStatus} />
+      <WarningBlock lang="en" label="In simple English" text={warning.en} onCopied={setStatus} onCopySuccess={onCopySuccess} />
       <WarningBlock
         lang="hi"
         label="In Hindi (हिंदी में)"
         text={warning.hi}
         onCopied={setStatus}
+        onCopySuccess={onCopySuccess}
       />
       <p role="status" className="notice">
         {status}
@@ -116,6 +119,9 @@ export function Exorcism({ result }: ExorcismProps) {
   const { view } = useViewSettings();
   const idPrefix = `step${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const [read, setRead] = useState<ReadonlySet<string>>(() => new Set());
+  // Sound is off until the user turns it on. It lives in memory only and is never stored.
+  const [sound, setSound] = useState(false);
+  const audio = useRef<AudioContext | undefined>(undefined);
   const plan = exorcismPlan(result);
   if (!plan) return null;
 
@@ -126,19 +132,30 @@ export function Exorcism({ result }: ExorcismProps) {
   const banished = banishedCount(readCount, total, ghosts);
   const done = readCount === total;
 
-  const toggle = (id: string) =>
+  const chime = () => {
+    if (!sound) return;
+    audio.current ??= createAudioContext();
+    if (audio.current) playChime(audio.current);
+  };
+
+  const toggle = (id: string) => {
+    if (!read.has(id)) chime();
     setRead((current) => {
       const next = new Set(current);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
+  };
 
   return (
     <section className={haunted ? 'exorcism exorcism-ritual' : 'exorcism'} aria-labelledby="exorcism-heading" id="exorcism">
       <h3 id="exorcism-heading">{haunted ? 'The Exorcism' : 'What to do now'}</h3>
       {haunted && <p className="exorcism-subtitle">What to do now</p>}
       <p className="exorcism-intro">{plan.intro}</p>
+      <button type="button" className="button button-secondary sound-toggle" aria-pressed={sound} onClick={() => setSound((on) => !on)}>
+        {sound ? 'Sound: on' : 'Sound: off'}
+      </button>
 
       {haunted && (
         <>
@@ -181,7 +198,7 @@ export function Exorcism({ result }: ExorcismProps) {
         })}
       </ol>
 
-      <FamilyWarnings warning={plan.warning} />
+      <FamilyWarnings warning={plan.warning} onCopySuccess={chime} />
     </section>
   );
 }

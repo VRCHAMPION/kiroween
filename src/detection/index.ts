@@ -1,4 +1,5 @@
 export { analyse } from './analyse';
+export { ensureDetectionData, isDetectionDataLoaded } from './data-loader';
 export { normaliseConfusables } from './normalise';
 export { lookalikeParts, type CharRange } from './brands';
 export { parseHost, registrableDomain } from './links';

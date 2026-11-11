@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SAMPLES } from '../../data/samples';
 import { useViewSettings } from '../../view-context';
 import { EndScreen } from './EndScreen';
+import { ensureDetectionData, isDetectionDataLoaded } from '../../detection';
 import { feedbackFor } from './feedback';
 import { FeedbackPanel } from './FeedbackPanel';
 import { answer, currentIndex, falseAlarms, missedTopics, newGame, next, scoreOf, type GameState, type Guess } from './game';
@@ -43,7 +44,7 @@ export function Seance({ active = true, random }: SeanceProps) {
     target.current?.focus();
   }, [game]);
 
-  const respond = useCallback(
+  const answerNow = useCallback(
     (choice: Guess) => {
       if (game.phase !== 'asking') return;
       const after = answer(game, choice);
@@ -53,6 +54,19 @@ export function Seance({ active = true, random }: SeanceProps) {
       setStatus(`${fb.title} ${fb.message.split('. ')[0].replace(/\.$/, '')}. You have ${scoreOf(after)} right out of ${after.answers.length} so far.`);
     },
     [game, round],
+  );
+
+  // The first answer waits for the detection data if it has not loaded yet; later answers stay synchronous.
+  const respond = useCallback(
+    (choice: Guess) => {
+      if (game.phase !== 'asking') return;
+      if (isDetectionDataLoaded()) {
+        answerNow(choice);
+        return;
+      }
+      void ensureDetectionData().then(() => answerNow(choice));
+    },
+    [game.phase, answerNow],
   );
 
   const advance = useCallback(() => {

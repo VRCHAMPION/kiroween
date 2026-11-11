@@ -130,18 +130,18 @@ describe('steering: product.md', () => {
 describe('steering: tech.md', () => {
   const doc = read('.kiro/steering/tech.md');
   const pkg = JSON.parse(read('package.json')) as { scripts: Record<string, string> };
-  const stack = ['React', 'Vite', 'TypeScript (strict mode)', 'Vitest', 'fast-check', 'jsdom', 'Testing Library', 'axe-core', 'ESLint'];
+  const stack = ['React', 'Vite', 'TypeScript (strict mode)', 'Vitest', 'fast-check', 'jsdom', 'Testing Library', 'axe-core', 'ESLint', 'tldts', 'tsx'];
 
   it.each(stack)('tech.md stack lists %s exactly once', (tool) => {
     const bullets = doc.split(/\r?\n/).filter((l) => l.startsWith(`- ${tool}:`));
     expect(bullets.length, `tech.md: stack entry for ${tool}`).toBe(1);
   });
 
-  it('package.json defines exactly the six documented scripts', () => {
-    expect(Object.keys(pkg.scripts).sort()).toEqual(['build', 'dev', 'lint', 'preview', 'test', 'typecheck']);
+  it('package.json defines exactly the nine documented scripts', () => {
+    expect(Object.keys(pkg.scripts).sort()).toEqual(['build', 'dev', 'eval', 'gen:brands', 'gen:confusables', 'lint', 'preview', 'test', 'typecheck']);
   });
 
-  it.each(['dev', 'build', 'typecheck', 'lint', 'test', 'preview'])('tech.md documents script %s with its real command', (name) => {
+  it.each(['dev', 'build', 'typecheck', 'lint', 'test', 'preview', 'eval', 'gen:confusables', 'gen:brands'])('tech.md documents script %s with its real command', (name) => {
     expect(doc.includes(`\`${name}\` (\`${pkg.scripts[name]}\`)`), `tech.md: script ${name} mismatch`).toBe(true);
   });
 
@@ -161,6 +161,7 @@ describe('steering: tech.md', () => {
     ['run-tests', 'PostFileSave'],
     ['rule-tests', 'PostFileCreate, PostFileSave'],
     ['a11y-check', 'PostFileCreate, PostFileSave'],
+    ['detection-tests', 'PostFileSave'],
     ['journal', 'PostTaskExec'],
   ])('tech.md lists hook %s with trigger %s', (name, trigger) => {
     expect(doc.includes(`- \`${name}\` (${trigger})`), `tech.md: hook ${name}`).toBe(true);
@@ -189,7 +190,7 @@ describe('steering: structure.md', () => {
   ])('structure.md states %s', (label, phrase) => {
     expect(doc.includes(phrase), `structure.md: missing ${label}`).toBe(true);
   });
-  it.each(['run-tests', 'rule-tests', 'a11y-check'])('documented matcher for %s equals the hook file', (id) => {
+  it.each(['run-tests', 'rule-tests', 'a11y-check', 'detection-tests'])('documented matcher for %s equals the hook file', (id) => {
     expect(documentedMatcher(doc, id), `structure.md: matcher mismatch for hook ${id}`).toBe(hook(id).hooks[0].matcher);
     expect(documentedMatcher(read('.kiro/steering/tech.md'), id), `tech.md: matcher mismatch for hook ${id}`).toBe(
       hook(id).hooks[0].matcher,
@@ -308,7 +309,7 @@ describe('index.html metadata', () => {
 
 // ---------- Hooks ----------
 describe('hooks', () => {
-  const ids = ['run-tests', 'rule-tests', 'a11y-check', 'journal'];
+  const ids = ['run-tests', 'rule-tests', 'a11y-check', 'detection-tests', 'journal'];
   it.each(ids)('%s.json is a valid v1 hook file', (id) => {
     const file = hook(id);
     expect(file.version, `${id}: version`).toBe('v1');
@@ -342,6 +343,15 @@ describe('hooks', () => {
       expect(entry.action.type).toBe('agent');
       expect(entry.action.prompt, `${id}: no scope limit in prompt`).toMatch(/Do not edit/);
     }
+  });
+
+  it('detection-tests runs only the detection tests on save under src/detection', () => {
+    const [entry] = hook('detection-tests').hooks;
+    expect(entry.trigger).toBe('PostFileSave');
+    expect(entry.action).toEqual({ type: 'command', command: 'npx vitest --run src/detection' });
+    const re = matcherOf('detection-tests');
+    for (const p of ['src/detection/data/confusables.ts', 'src\\detection\\rules\\x.test.ts', 'd:\\x\\src\\detection\\brands.ts']) expect(re.test(p), p).toBe(true);
+    for (const p of ['src/App.tsx', 'src/features/a.ts', 'src/detection/rules/x.css']) expect(re.test(p), p).toBe(false);
   });
 
   it('journal runs after each task with no matcher', () => {
@@ -543,8 +553,8 @@ describe('README', () => {
     expect(doc).toContain('npm install');
     expect(doc).toContain('npm test');
     expect(scripts.test).toBe('vitest --run');
-    const runs = [...doc.matchAll(/npm run ([a-z]+)/g)].map((m) => m[1]);
-    expect(new Set(runs)).toEqual(new Set(['dev', 'build', 'preview']));
+    const runs = [...doc.matchAll(/npm run ([a-z:]+)/g)].map((m) => m[1]);
+    expect(new Set(runs)).toEqual(new Set(['dev', 'build', 'preview', 'eval', 'gen:confusables', 'gen:brands']));
     for (const name of runs) expect(scripts[name], `README: unknown script ${name}`).toBeDefined();
   });
 
@@ -558,7 +568,7 @@ describe('README', () => {
 
 describe('.gitignore', () => {
   const lines = read('.gitignore').split(/\r?\n/).map((l) => l.trim());
-  it.each(['node_modules/', 'dist/', 'coverage/', '.env', '.env.*', '*.log', '*-done.txt', 'checks.txt', '*.bak', '.vscode/', 'Thumbs.db', '.DS_Store', 'test-results/'])('ignores %s', (entry) => {
+  it.each(['node_modules/', 'dist/', 'coverage/', '.env', '.env.*', '*.log', '*-done.txt', 'checks.txt', '*.bak', '.vscode/', 'Thumbs.db', '.DS_Store', 'test-results/', 'eval-data/'])('ignores %s', (entry) => {
     expect(lines).toContain(entry);
   });
   it('never ignores .kiro', () => {
@@ -619,6 +629,55 @@ describe('third-party licences', () => {
     for (const asset of OCR_ASSETS) {
       expect(asset.path.startsWith('ocr/'), asset.path).toBe(true);
       expect(exists(`node_modules/${asset.source}`), `missing node_modules/${asset.source}`).toBe(true);
+    }
+  });
+});
+
+describe('phishing-forensics power', () => {
+  const manifest = JSON.parse(read('powers/phishing-forensics/plugin.json')) as Record<string, unknown> & { author: { name: string }; keywords: string[] };
+  const skills = ['detection-rules', 'evaluation'].map((n) => read(`powers/phishing-forensics/skills/${n}/SKILL.md`));
+  const scripts = JSON.parse(read('package.json')).scripts as Record<string, string>;
+
+  it('has the fields the Kiro powers page requires', () => {
+    expect(manifest.$schema).toBe('https://agent-plugins.org/schemas/1.0.0/plugin.schema.json');
+    expect(manifest.name).toBe('phishing-forensics');
+    expect(manifest.version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(String(manifest.description).length).toBeGreaterThan(20);
+    expect(manifest.author.name.length).toBeGreaterThan(0);
+    for (const k of ['phishing', 'homograph', 'punycode', 'typosquat', 'scam', 'confusables']) expect(manifest.keywords).toContain(k);
+  });
+
+  it('every skill has front matter with a name and a description', () => {
+    for (const s of skills) expect(s).toMatch(/^---\nname: [a-z-]+\ndescription: .+\n---/);
+  });
+
+  it('the rules skill names every rule file in src/detection/rules', () => {
+    const rules = readdirSync(join(ROOT, 'src/detection/rules')).filter((n) => n.endsWith('.ts') && !n.endsWith('.test.ts'));
+    expect(rules.length).toBeGreaterThan(0);
+    for (const r of rules) expect(skills[0], r).toContain(`\`${r}\``);
+  });
+
+  it('every npm script and file path the skills name exists', () => {
+    const text = skills.join('\n');
+    for (const m of text.matchAll(/npm run ([a-z:]+)/g)) expect(scripts[m[1]], m[1]).toBeDefined();
+    for (const m of text.matchAll(/`((?:src|scripts|docs)\/[A-Za-z0-9_./-]+)`/g)) expect(exists(m[1].replace(/\/$/, '')), m[1]).toBe(true);
+  });
+});
+
+describe('property-based tests in the detection engine', () => {
+  function testFiles(dir: string): string[] {
+    return readdirSync(dir).flatMap((n) => {
+      const full = join(dir, n);
+      return statSync(full).isDirectory() ? testFiles(full) : /\.test\.tsx?$/.test(n) ? [full] : [];
+    });
+  }
+  it('every fc.assert declares at least 100 runs', () => {
+    for (const file of testFiles(join(ROOT, 'src/detection'))) {
+      const code = readFileSync(file, 'utf8');
+      const asserts = code.split('fc.assert(').length - 1;
+      const runs = [...code.matchAll(/numRuns:\s*(\d+)/g)].map((m) => Number(m[1]));
+      expect(runs.length, `${file}: numRuns count`).toBeGreaterThanOrEqual(asserts);
+      for (const n of runs) expect(n, file).toBeGreaterThanOrEqual(100);
     }
   });
 });

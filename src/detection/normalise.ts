@@ -1,3 +1,5 @@
+import { getData } from './data-loader';
+
 /**
  * Look-alike characters folded to the Latin letter they imitate.
  * Keys are lower-case because the text is lower-cased first.
@@ -49,10 +51,15 @@ export const CONFUSABLES: Readonly<Record<string, string>> = {
   '|': 'l',
 };
 
+/** The Latin letter or digit a character imitates: the hand-made stand-ins first, then the Unicode confusables once loaded. */
+export function confusableFor(ch: string): string | undefined {
+  return CONFUSABLES[ch] ?? getData()?.confusables[ch];
+}
+
 function step(value: string): string {
   let out = '';
   for (const ch of value.normalize('NFKC').toLowerCase()) {
-    out += CONFUSABLES[ch] ?? ch;
+    out += confusableFor(ch) ?? ch;
   }
   // "rn" looks like "m" and "vv" looks like "w" in many fonts.
   while (out.includes('rn') || out.includes('vv')) {

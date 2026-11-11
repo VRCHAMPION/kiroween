@@ -12,5 +12,5 @@
     "allowImportingTsExtensions": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "tests", "vite.config.ts", "csp.ts", "ocr-assets.ts"]
+  "include": ["src", "tests", "vite.config.ts", "csp.ts", "ocr-assets.ts", "scripts/eval"]
 }
