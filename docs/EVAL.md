@@ -23,16 +23,16 @@ One file (`cmds`, a corpus index file) was skipped, as designed.
 
 - Date: 2026-11-11
 - Command: `npm run eval`
-- Positives: Nazario phishing corpus, file `phishing-2022.txt` only (245 messages). Source: https://monkey.org/~jose/phishing/
+- Positives: Nazario phishing corpus, files `phishing-2022.txt`, `phishing-2023.txt`, `phishing-2024.txt` and `phishing-2025.txt` (1,548 messages). Source: https://monkey.org/~jose/phishing/
 - Negatives: SpamAssassin public corpus, `20030228_easy_ham` and `20030228_hard_ham` (2,750 messages). Source: https://spamassassin.apache.org/old/publiccorpus/
-- Skipped files: 0. The 2023, 2024 and 2025 Nazario files were not available, so this run is a subset.
+- Skipped files: 0. The older Nazario files (2005 to 2007 mboxes and 2015 to 2021) were not used, so this is still a subset.
 
 | Counting as scam | TP | FP | TN | FN | Precision | Recall | False-positive rate |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Suspicious or likely scam | 161 | 203 | 2,547 | 84 | 44.2% | 65.7% | 7.4% |
-| Likely scam only (strict) | 25 | 11 | 2,739 | 220 | 69.4% | 10.2% | 0.4% |
+| Suspicious or likely scam | 892 | 203 | 2,547 | 656 | 81.5% | 57.6% | 7.4% |
+| Likely scam only (strict) | 128 | 11 | 2,739 | 1,420 | 92.1% | 8.3% | 0.4% |
 
-How to read these: the normal mail is from 2002 to 2003 and the phishing mail is from 2022. Dated mail can differ in style, so these numbers are a rough guide only. The strict setting catches few scams (recall 10.2%) but rarely flags normal mail. The default setting catches more scams but flags about 1 in 13 normal messages.
+How to read these: the normal mail is from 2002 to 2003 and the phishing mail is from 2022 to 2025. Dated mail can differ in style, so these numbers are a rough guide only. The strict setting rarely flags normal mail but misses most scams (recall 8.3%). The default setting catches about 58% of the scams and flags about 1 in 13 normal messages.
 
 `eval-data/` is gitignored. Never commit a corpus; each corpus has its own terms for the person who downloads it.
 
