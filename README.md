@@ -8,7 +8,7 @@ Phantom Inbox is a scam detector for emails, SMS and WhatsApp messages. It focus
 
 - **Possession Check** (available): paste a message, add a screenshot, pick a sample or open an .eml file, and see which words look like a scam and why.
 - **Exorcism** (available): after a scam or suspicious result, get clear next steps and a ready-to-copy warning for family in English and Hindi.
-- **Séance** (planned): a training game where you decide whether a message is real or a scam.
+- **Séance** (available): a 10-round training game where you decide whether each message is real or a scam, and learn why.
 
 The app has two views. Mortal view is calm, high contrast and large text. Haunted view shows each red flag as a ghost sitting on the exact words it is about.
 
@@ -29,6 +29,20 @@ After a check finds a likely scam or a suspicious message, Phantom Inbox lists w
 - More steps depend on the trick found. For example, a remote-access app means "uninstall it now and call your bank", and a "digital arrest" message means "police never arrest anyone on a video call".
 - A short warning for your family is ready to copy or share, in simple English and in Hindi. It is made only from fixed wording, so nothing from the scam message is copied into it.
 - In Haunted view the steps become an exorcism ritual: tick each step as you read it and the ghosts fade away. The steps stay word for word the same.
+
+## Séance: real or scam?
+
+Open "Séance" at the top of the page to practise.
+
+- Each game has 10 made-up messages (SMS, WhatsApp and email): about 6 scams and 4 real ones, shuffled every time, with no repeats. The pool has 29 messages covering KYC, courier fees, electricity, UPI refunds, job tasks, digital arrest, lookalike links and risky attachments, plus real bank alerts, deliveries, one-time codes, bills and family messages.
+- After each answer the real detection engine checks the message:
+  - Right answer: "Well spotted!" and the main red flags.
+  - Missed scam: the warning signs are marked on the exact words, with their plain-English reasons.
+  - Real message marked as a scam: a calm explanation of why it was safe, so you do not learn to fear every message.
+- The end screen shows your score out of 10, the scam types to look out for (with a tip for each), and "Play again".
+- Play with the keyboard: R for Real, S for Scam, and Enter for the next message. Results are announced to screen readers.
+- In Haunted view the game becomes a séance table: each right answer lights a candle, and missed ghosts drift up from the words they were hiding in.
+- Your answers and score stay in memory only. Nothing is saved or sent.
 
 ## Haunted view
 

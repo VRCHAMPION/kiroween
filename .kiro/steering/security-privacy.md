@@ -15,6 +15,7 @@ inclusion: always
 - Message content is never written to localStorage, sessionStorage, IndexedDB, cookies, URLs, or console and application logs.
 - The only values stored in the browser are the view preference (`phantom-inbox:view`, value `mortal` or `haunted`) and the reduced-motion preference (`phantom-inbox:reduced-motion`, value `true` or `false`).
 - If storage fails or is blocked, the app keeps working with defaults and shows no error.
+- Séance answers and scores live in memory only. They are never stored or sent, and they are gone when the page closes.
 
 ## Screenshots
 

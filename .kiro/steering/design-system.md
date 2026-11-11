@@ -39,6 +39,7 @@ Two views share the same token names. Each view sets its own values. The shell s
 - Every interactive element works with the keyboard alone.
 - Every interactive element shows a visible focus indicator that is at least 2px thick and has at least 3:1 contrast against the colours next to it.
 - Click and tap targets are at least 44px high.
+- Single-letter shortcuts (R and S in Séance) work only on their own screen, never while typing in a field or with Ctrl, Alt or Meta, and are exposed with `aria-keyshortcuts`.
 
 ## Red flags and ghosts
 
@@ -68,6 +69,7 @@ Two views share the same token names. Each view sets its own values. The shell s
   - Fake deadlines get a countdown.
   - Link ghosts speak their True Name on hover or focus.
   - Pressing any ghost opens its reason.
+  - In Séance, each right answer lights a table candle, and missed ghosts drift up from the words.
 - Ghost buttons are at least 44px. Speech bubbles close with Escape and stay open while the pointer is over them.
 - Headings may use the heading font. Labels, reasons, ghost labels and the verdict use the body font.
 - Nothing flashes more than three times in one second. Flicker only dims a soft glow.

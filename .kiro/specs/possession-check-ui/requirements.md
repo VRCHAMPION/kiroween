@@ -12,7 +12,7 @@ Possession Check is the main screen of Phantom Inbox. A user pastes a message, o
 - **Eml_Picker**: the drop zone and the "Choose an .eml file" button.
 - **Eml_Parser**: `parseEml(raw)` in `src/email/parse-eml.ts`, which returns headers, header text, subject, sender, body text, links and attachment names.
 - **Email_Details**: the headers and attachment names loaded from an `.eml` file or an email sample.
-- **Sample_Menu**: the "Try a sample" select menu listing the 15 samples from `src/data/samples.ts`.
+- **Sample_Menu**: the "Try a sample" select menu listing every sample from `src/data/samples.ts`.
 - **Check_Button**: the "Check this message" button.
 - **Result_Panel**: the section that shows the verdict, haunt score, flag cards and the highlighted message.
 - **Verdict_Icon**: a shape that differs per verdict (octagon for likely scam, triangle for suspicious, circle with a tick for looks safe).
@@ -51,7 +51,7 @@ Possession Check is the main screen of Phantom Inbox. A user pastes a message, o
 
 #### Acceptance Criteria
 
-1. THE Sample_Menu SHALL have the visible label "Try a sample" and list all 15 samples by channel and title.
+1. THE Sample_Menu SHALL have the visible label "Try a sample" and list every sample by channel and title.
 2. WHEN the user picks a sample, THE Screen SHALL put the sample text into the Message_Box and load the sample's headers and attachments as Email_Details.
 3. THE Sample_Menu SHALL be a native select control so it works with keyboard, touch and screen readers.
 

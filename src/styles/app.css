@@ -102,3 +102,27 @@ body {
     padding: var(--space-3);
   }
 }
+.screen-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.nav-button {
+  flex: 1 1 10rem;
+}
+
+.nav-button[aria-current='page'] {
+  border-color: var(--color-accent-flag);
+  border-width: 3px;
+  background: var(--color-surface);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+.possession-check h2:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: 2px;
+}

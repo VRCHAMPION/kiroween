@@ -16,7 +16,7 @@ The detection engine is the pure TypeScript core of Phantom Inbox. It reads a me
 - **Verdict**: one of `likely scam`, `suspicious`, `looks safe`.
 - **Rule**: one file in `src/detection/rules/` that returns Red_Flags for a prepared input.
 - **Normaliser**: `normaliseConfusables`, which folds look-alike characters to plain ASCII letters for comparison.
-- **Sample_Set**: the 15 sample messages in `src/data/samples.ts`.
+- **Sample_Set**: the sample messages in `src/data/samples.ts` (15 at first, extended to 29 by the seance spec).
 
 ## Requirements
 
@@ -123,7 +123,7 @@ The detection engine is the pure TypeScript core of Phantom Inbox. It reads a me
 
 #### Acceptance Criteria
 
-1. THE Sample_Set SHALL contain exactly 15 messages: 10 scams and 5 genuine messages, including a genuine bank alert and a genuine delivery update.
+1. THE Sample_Set SHALL contain at least 15 messages, with at least 10 scams and 5 genuine messages, including a genuine bank alert and a genuine delivery update. The seance spec raises this to at least 25.
 2. THE Sample_Set SHALL use only made-up names, phone numbers and domains for every sender, link and person.
 3. THE scams in the Sample_Set SHALL together trigger every Red_Flag type.
 4. EACH sample SHALL record its channel (email, SMS or WhatsApp), a title, its expected Verdict and the flag types it is expected to trigger.

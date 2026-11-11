@@ -1,0 +1,376 @@
+/* Séance: a real-or-scam training game. Tokens for colours, spacing and text sizes; motion uses only
+   transform and opacity, and reduced-motion mode removes it (see app.css). */
+.seance {
+  display: grid;
+  gap: var(--space-3);
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.seance h2,
+.seance h3,
+.seance h4 {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.seance h2 {
+  font-size: var(--font-size-heading);
+}
+
+.seance p {
+  margin: 0;
+}
+
+.seance-progress {
+  font-weight: 700;
+}
+
+.round-card,
+.seance-feedback,
+.seance-end {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+}
+
+.round-channel {
+  display: flex;
+}
+
+.channel-badge {
+  display: inline-block;
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-border);
+  font-weight: 700;
+}
+
+.round-email {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+}
+
+.round-email dt {
+  font-weight: 700;
+}
+
+.round-email dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.round-message {
+  padding: var(--space-2);
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+}
+
+.round-attachments {
+  overflow-wrap: anywhere;
+}
+
+.round-question {
+  font-size: var(--font-size-heading);
+  font-weight: 700;
+}
+
+.seance-answer {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.seance-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.seance-choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 64px;
+  font-size: var(--font-size-heading);
+}
+
+.seance-choice kbd {
+  padding: 0 var(--space-1);
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: var(--font-size-body);
+}
+
+.choice-scam {
+  border-color: var(--color-accent-flag);
+}
+
+.seance-feedback {
+  border-width: 3px;
+}
+
+.outcome-spotted-scam,
+.outcome-spotted-real {
+  border-color: var(--color-verdict-safe);
+}
+
+.outcome-missed-scam {
+  border-color: var(--color-verdict-scam);
+}
+
+.outcome-false-alarm {
+  border-color: var(--color-verdict-suspicious);
+}
+
+.seance-flags {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.seance-flag {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-left-width: 8px;
+}
+
+.seance-flag.severity-high {
+  border-left-color: var(--color-verdict-scam);
+}
+
+.seance-flag.severity-medium {
+  border-left-color: var(--color-verdict-suspicious);
+}
+
+.safe-reasons,
+.missed-topics {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: 1.4em;
+}
+
+.seance-engine {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.seance-engine .verdict-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.seance-next {
+  justify-self: stretch;
+}
+
+.end-score strong {
+  font-size: var(--font-size-heading);
+}
+
+.seance h2:focus-visible,
+.seance h3:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.seance-status:empty {
+  display: none;
+}
+
+/* ---------- Haunted view: the séance table ---------- */
+[data-view='haunted'] .round-card,
+[data-view='haunted'] .seance-feedback,
+[data-view='haunted'] .seance-end {
+  border-radius: 12px;
+  background: var(--color-bg);
+}
+
+[data-view='haunted'] .round-message,
+[data-view='haunted'] .seance-flag {
+  border-radius: 8px;
+}
+
+.seance-table {
+  position: relative;
+  height: 128px;
+  margin: 0 auto;
+  width: min(100%, 34rem);
+}
+
+.seance-cloth {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  background: radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--color-candle) 16%, var(--color-sky-bottom)) 0%, var(--color-mansion) 75%);
+}
+
+.seance-candles {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 30px;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.seance-candle {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: 14px;
+}
+
+.seance-candle:nth-child(odd) {
+  margin-bottom: 10px;
+}
+
+.seance-wax {
+  width: 12px;
+  height: 38px;
+  border-radius: 3px 3px 2px 2px;
+  background: var(--color-wax);
+}
+
+.seance-candle:nth-child(3n) .seance-wax {
+  height: 30px;
+}
+
+.seance-wick {
+  width: 2px;
+  height: 6px;
+  background: var(--color-ghost-ink);
+}
+
+.seance-flame {
+  position: absolute;
+  bottom: 42px;
+  width: 12px;
+  height: 20px;
+  border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 50% 72%, var(--color-moon) 0 18%, var(--color-candle) 46%, transparent 76%);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  transform: scale(0.2);
+}
+
+.seance-glow {
+  position: absolute;
+  bottom: 30px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-candle) 45%, transparent), transparent 65%);
+  opacity: 0;
+}
+
+.seance-candle:nth-child(3n) .seance-flame {
+  bottom: 34px;
+}
+
+.seance-candle:nth-child(3n) .seance-glow {
+  bottom: 22px;
+}
+
+.seance-candle.is-lit .seance-flame {
+  opacity: 1;
+  transform: none;
+  animation:
+    seance-ignite 600ms ease-out,
+    seance-flicker 1.5s ease-in-out 600ms infinite alternate;
+}
+
+.seance-candle.is-lit .seance-glow {
+  opacity: 0.9;
+  animation: seance-glow 2.4s ease-in-out infinite alternate;
+}
+
+.seance-candle.is-lit:nth-child(2n) .seance-flame {
+  animation-duration: 600ms, 1.9s;
+}
+
+/* Missed ghosts drift up out of the words they were hiding in. */
+.seance-missed .ghost-button {
+  animation: seance-drift 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.seance-missed .ghost:nth-of-type(2) .ghost-button {
+  animation-delay: 200ms;
+}
+
+.seance-missed .ghost:nth-of-type(3) .ghost-button {
+  animation-delay: 400ms;
+}
+
+@keyframes seance-ignite {
+  from {
+    opacity: 0;
+    transform: scale(0.2) translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes seance-flicker {
+  0% {
+    transform: scale(1, 1) rotate(-3deg);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(0.9, 1.1) rotate(2deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.05, 0.93) rotate(-1deg);
+    opacity: 0.85;
+  }
+}
+
+@keyframes seance-glow {
+  from {
+    opacity: 0.6;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes seance-drift {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.7);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.05);
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}

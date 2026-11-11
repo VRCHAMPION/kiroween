@@ -14,7 +14,7 @@ inclusion: always
 - `src/features/`: one folder per screen, such as `possession-check/`; feature code may import the detection engine.
 - `src/email/`: the `.eml` file parser, which works on strings only.
 - `src/ocr/`: the screenshot reader, which wraps tesseract.js behind an `OcrReader` so tests can use a fake.
-- `src/data/`: sample messages used by the screens and tests.
+- `src/data/`: sample messages used by the screens, the Séance game and the tests.
 - `docs/`: project documents, including `docs/kiro-journal.md` and `docs/perf-mobile.md`.
 - `scripts/`: developer tools that are not shipped, such as the mobile performance check.
 - `public/`: files copied unchanged into the build, such as font licences.

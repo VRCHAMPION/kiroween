@@ -1,16 +1,38 @@
+import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import { analyse, FLAG_TYPES } from '../detection';
-import { SAMPLES } from './samples';
+import { SAMPLES, type GenuineTopic, type ScamTopic } from './samples';
 
 const scams = SAMPLES.filter((s) => s.id.startsWith('scam-'));
 const genuine = SAMPLES.filter((s) => s.id.startsWith('genuine-'));
 
 describe('sample messages', () => {
-  it('has 10 scams and 5 genuine messages with unique ids', () => {
-    expect(SAMPLES).toHaveLength(15);
-    expect(scams).toHaveLength(10);
-    expect(genuine).toHaveLength(5);
-    expect(new Set(SAMPLES.map((s) => s.id)).size).toBe(15);
+  it('has at least 25 messages, enough of each kind for a Séance game, with unique ids', () => {
+    expect(SAMPLES.length).toBeGreaterThanOrEqual(25);
+    expect(scams.length).toBeGreaterThanOrEqual(10);
+    expect(genuine.length).toBeGreaterThanOrEqual(5);
+    expect(scams.length + genuine.length).toBe(SAMPLES.length);
+    expect(new Set(SAMPLES.map((s) => s.id)).size).toBe(SAMPLES.length);
+  });
+
+  it('labels scams and genuine messages consistently', () => {
+    for (const s of scams) expect(s.expectedVerdict, s.id).not.toBe('looks safe');
+    for (const s of genuine) expect(s.expectedVerdict, s.id).toBe('looks safe');
+  });
+
+  it('covers every scam and genuine topic', () => {
+    const scamTopics: ScamTopic[] = ['KYC expiry', 'Courier fee', 'Electricity disconnection', 'UPI refund', 'Job task', 'Digital arrest', 'Lookalike link', 'Risky attachment'];
+    const genuineTopics: GenuineTopic[] = ['Bank alert', 'Delivery update', 'One-time code', 'Family message', 'Bill or receipt'];
+    expect(new Set(scams.map((s) => s.topic))).toEqual(new Set(scamTopics));
+    expect(new Set(genuine.map((s) => s.topic))).toEqual(new Set(genuineTopics));
+  });
+
+  it('gives every genuine message plain reasons why it is safe, and no scam any', () => {
+    for (const s of genuine) {
+      expect(s.safeReasons?.length ?? 0, s.id).toBeGreaterThan(0);
+      for (const reason of s.safeReasons ?? []) expect(reason, s.id).toMatch(/^[A-Z].*[.]$/);
+    }
+    for (const s of scams) expect(s.safeReasons, s.id).toBeUndefined();
   });
 
   it.each(SAMPLES.map((s) => [s.id, s] as const))('%s gets its expected verdict', (_id, sample) => {
@@ -44,5 +66,30 @@ describe('sample messages', () => {
     const hosts = [...allText.matchAll(/(?:https?:\/\/|@)([^\s/<>"]+)/g)].map((m) => m[1].replace(/[.,]$/, ''));
     const fictional = /\.(example|top)$|^(bit\.ly|cutt\.ly)$|^\d+\.\d+\.\d+\.\d+$/;
     expect(hosts.filter((h) => !fictional.test(h))).toEqual([]);
+  });
+});
+describe('sample properties', () => {
+  // Feature: seance, Property 3: Every scam sample is checked as suspicious or likely scam
+  // Whichever scam sample a game picks, the real engine flags it as suspicious or likely scam.
+  it('checks every scam sample as suspicious or likely scam', () => {
+    fc.assert(
+      fc.property(fc.constantFrom(...scams), (sample) => {
+        expect(['suspicious', 'likely scam']).toContain(analyse(sample).verdict);
+      }),
+      { numRuns: 100 },
+    );
+  });
+
+  // Feature: seance, Property 4: No genuine sample gets a high-severity flag
+  // Whichever genuine sample a game picks, the real engine finds no high-severity flag and says it looks safe.
+  it('never gives a genuine sample a high-severity flag', () => {
+    fc.assert(
+      fc.property(fc.constantFrom(...genuine), (sample) => {
+        const result = analyse(sample);
+        expect(result.flags.filter((f) => f.severity === 'high')).toEqual([]);
+        expect(result.verdict).toBe('looks safe');
+      }),
+      { numRuns: 100 },
+    );
   });
 });

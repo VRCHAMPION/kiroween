@@ -16,6 +16,8 @@ interface HauntedTextProps {
   /** Flags whose spans index into `text`. */
   flags: readonly NumberedFlag[];
   className?: string;
+  /** Start of the ids of the matching flag cards. Defaults to Possession Check's cards. */
+  cardIdPrefix?: string;
 }
 
 /** How long a link ghost keeps talking after the pointer leaves, so the pointer can reach its bubble. */
@@ -25,7 +27,7 @@ const HIDE_DELAY_MS = 300;
  * Haunted rendering of checked text: flagged words become ghost marks, look-alike letters twitch,
  * and each flag's ghost sits right after its words. All text stays plain text.
  */
-export function HauntedText({ text, flags, className = 'message-text' }: HauntedTextProps) {
+export function HauntedText({ text, flags, className = 'message-text', cardIdPrefix }: HauntedTextProps) {
   const { reducedMotion } = useViewSettings();
   const idPrefix = `ghost${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`;
   const [speaking, setSpeaking] = useState<number | undefined>();
@@ -121,6 +123,7 @@ export function HauntedText({ text, flags, className = 'message-text' }: Haunted
                   flag={flags[i].flag}
                   number={flags[i].number}
                   idPrefix={idPrefix}
+                  cardIdPrefix={cardIdPrefix}
                   speaking={speaking === flags[i].number}
                   open={open.has(flags[i].number)}
                   frozen={reducedMotion}

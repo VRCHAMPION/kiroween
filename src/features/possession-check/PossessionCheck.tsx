@@ -168,7 +168,9 @@ export function PossessionCheck({ ocr = readScreenshot }: PossessionCheckProps) 
 
   return (
     <section className="possession-check" aria-labelledby="possession-check-heading" aria-busy={shot.reading} onPaste={onPaste}>
-      <h2 id="possession-check-heading">Possession Check</h2>
+      <h2 id="possession-check-heading" tabIndex={-1}>
+        Possession Check
+      </h2>
       <p className="intro">Got a message that feels wrong? Paste it here and we will look for the ghosts hiding in it.</p>
 
       <div className="field">

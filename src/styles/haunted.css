@@ -229,6 +229,7 @@
 /* ---------- Candle-lit panels ---------- */
 [data-view='haunted'] .app-header,
 [data-view='haunted'] .possession-check,
+[data-view='haunted'] .seance,
 [data-view='haunted'] .result-panel,
 [data-view='haunted'] .flag-card {
   position: relative;
@@ -242,7 +243,8 @@
 }
 
 [data-view='haunted'] .app-header,
-[data-view='haunted'] .possession-check {
+[data-view='haunted'] .possession-check,
+[data-view='haunted'] .seance {
   padding: var(--space-3);
   border-width: 2px;
   background: var(--color-surface);
@@ -261,6 +263,7 @@
 /* Warm glow inside each panel, behind its content. At full strength it is the blend the token test checks. */
 [data-view='haunted'] .app-header::before,
 [data-view='haunted'] .possession-check::before,
+[data-view='haunted'] .seance::before,
 [data-view='haunted'] .result-panel::before,
 [data-view='haunted'] .flag-card::before {
   content: '';
@@ -289,6 +292,7 @@
 /* A small flame standing on the top edge of each panel, clear of the text inside. */
 [data-view='haunted'] .app-header::after,
 [data-view='haunted'] .possession-check::after,
+[data-view='haunted'] .seance::after,
 [data-view='haunted'] .result-panel::after,
 [data-view='haunted'] .flag-card::after {
   content: '';

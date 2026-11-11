@@ -142,6 +142,29 @@ async function checkSample(page) {
   return ms;
 }
 
+/**
+ * Opens Séance and answers with the keyboard, always "real": real messages light candles and scams
+ * are missed, so their ghosts drift up. Answers at least `rounds` messages, then stops on the first
+ * missed scam so the measured screen has ghosts on it.
+ */
+async function playSeance(page, rounds) {
+  await page.evaluate(() => [...document.querySelectorAll('nav button')].find((b) => b.textContent === 'S\u00e9ance')?.click());
+  await page.waitForSelector('.seance-choice', { visible: true });
+  for (let i = 0; i < 10; i += 1) {
+    await page.keyboard.press('KeyR');
+    await page.waitForSelector('.seance-feedback', { visible: true });
+    const ghosts = await page.$$eval('.seance-missed .ghost-button', (b) => b.length);
+    if ((i + 1 >= rounds && ghosts > 0) || i === 9) break;
+    await page.keyboard.press('Enter');
+    await page.waitForSelector('.seance-choice', { visible: true });
+  }
+  return page.evaluate(() => ({
+    lit: document.querySelectorAll('.seance-candle.is-lit').length,
+    candles: document.querySelectorAll('.seance-candle').length,
+    ghosts: document.querySelectorAll('.seance-missed .ghost-button').length,
+  }));
+}
+
 async function distSizes() {
   const { readdir } = await import('node:fs/promises');
   const files = await readdir(join(DIST, 'assets'));
@@ -206,7 +229,26 @@ async function main() {
     const calmSmil = await calm.page.evaluate(() => document.querySelectorAll('.score-candle animate, .score-candle animateTransform').length);
     await calm.page.close();
 
-    const allRequests = [...mortal.requests, ...haunted.requests, ...calm.requests];
+    // Séance in Haunted view: candles lit and missed ghosts on screen, measured idle and while scrolling.
+    const seance = await openPage(browser, url, { view: 'haunted', reducedMotion: false });
+    const seanceInfo = await playSeance(seance.page, 5);
+    await new Promise((r) => setTimeout(r, 1800));
+    const seanceStart = await seance.page.evaluate(() => performance.now());
+    const seanceIdle = await seance.page.evaluate(measureFrames, 4000, false);
+    const seanceScroll = await seance.page.evaluate(measureFrames, 3000, true);
+    const seancePerf = await seance.page.evaluate(() => window.__perf);
+    const seanceLong = seancePerf.longTasks.filter((t) => t.start >= seanceStart);
+    const seanceRunning = await seance.page.evaluate(() => document.getAnimations().length);
+    await seance.page.close();
+
+    // Séance with reduced motion: no candle flicker, no drifting ghosts.
+    const seanceCalm = await openPage(browser, url, { view: 'haunted', reducedMotion: true });
+    await playSeance(seanceCalm.page, 3);
+    await new Promise((r) => setTimeout(r, 800));
+    const seanceCalmRunning = await seanceCalm.page.evaluate(() => document.getAnimations().length);
+    await seanceCalm.page.close();
+
+    const allRequests = [...mortal.requests, ...haunted.requests, ...calm.requests, ...seance.requests, ...seanceCalm.requests];
     const foreign = [...new Set(allRequests.map((r) => new URL(r).origin))].filter((o) => o !== origin && o !== 'null');
     const longDuringAnimation = perf.longTasks.filter((t) => t.start >= windowStart);
     const blockingDuringAnimation = longDuringAnimation.reduce((sum, t) => sum + Math.max(0, t.duration - 50), 0);
@@ -222,6 +264,11 @@ async function main() {
       ['Layout shift below 0.1', perf.cls < 0.1, perf.cls.toFixed(3)],
       ['No CSS animations with reduced motion', calmRunning === 0, String(calmRunning)],
       ['No candle melt with reduced motion', calmSmil === 0, String(calmSmil)],
+      ['S\u00e9ance: frame rate with candles and ghosts at least 50 fps', seanceIdle.fps >= 50, `${seanceIdle.fps.toFixed(1)} fps`],
+      ['S\u00e9ance: frame rate while scrolling at least 45 fps', seanceScroll.fps >= 45, `${seanceScroll.fps.toFixed(1)} fps`],
+      ['S\u00e9ance: no long tasks while it animates', seanceLong.length === 0, `${seanceLong.length}`],
+      ['S\u00e9ance: layout shift below 0.1', seancePerf.cls < 0.1, seancePerf.cls.toFixed(3)],
+      ['S\u00e9ance: no CSS animations with reduced motion', seanceCalmRunning === 0, String(seanceCalmRunning)],
     ];
     const passed = checks.every(([, ok]) => ok);
 
@@ -255,6 +302,14 @@ ${checks.map(([name, ok, value]) => `| ${name} | ${ok ? 'Pass' : 'Fail'} | ${val
 | Running CSS animations | ${running} |
 | JavaScript heap used | ${kb(metrics.JSHeapUsedSize)} |
 | Long tasks during page load and check | ${perf.longTasks.length - longDuringAnimation.length} |
+
+| S\u00e9ance in Haunted view (answered "real" until a scam was missed) | Value |
+| --- | --- |
+| Candles lit / on the table | ${seanceInfo.lit} / ${seanceInfo.candles} |
+| Missed ghosts on screen | ${seanceInfo.ghosts} |
+| Frame rate, idle | ${seanceIdle.fps.toFixed(1)} fps (95th percentile frame ${msText(seanceIdle.p95)}, worst ${msText(seanceIdle.worst)}) |
+| Frame rate, scrolling | ${seanceScroll.fps.toFixed(1)} fps (95th percentile frame ${msText(seanceScroll.p95)}, worst ${msText(seanceScroll.worst)}) |
+| Running CSS animations | ${seanceRunning} |
 
 | Build size | Value |
 | --- | --- |
