@@ -26,6 +26,7 @@ inclusion: always
 - `typecheck` (`tsc --noEmit`): checks types without writing files.
 - `lint` (`eslint . --max-warnings 0`): fails on any error or warning.
 - `test` (`vitest --run`): runs every test once and exits. It never starts watch mode.
+- `preview` (`vite preview`): serves the production build in `dist/` on 127.0.0.1:4173 with the same headers as `vercel.json`.
 
 ## Rules
 

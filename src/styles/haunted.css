@@ -492,3 +492,8 @@
     opacity: 0.86;
   }
 }
+[data-view='haunted'] .app-footer {
+  position: relative;
+  border-radius: 12px;
+  background: var(--color-surface);
+}

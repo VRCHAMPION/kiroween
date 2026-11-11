@@ -39,6 +39,8 @@ default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; f
 
 - The policy applies to the production build only. The Vite development server is exempt, because it needs inline scripts and a websocket for hot module replacement, so `npm run dev` keeps working.
 - The single source of the policy text is `csp.ts`. This document and `dist/index.html` must match it exactly.
+- The hosting config `vercel.json` sends the same policy as a header on every path, plus `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy: camera=(), microphone=(), geolocation=()` and `X-Frame-Options: DENY`.
+- The OCR worker is the one exception. A worker takes the policy from its own response headers, so files under `/ocr/` get `OCR_WORKER_CSP` from `csp.ts`: same-origin scripts only, `'wasm-unsafe-eval'` to compile WebAssembly, and `connect-src 'self'` to read the language data from this site. It was proven necessary in a real browser: with the page policy alone, screenshot reading times out. It allows no other origin, no `unsafe-inline` and no `unsafe-eval`. The page policy is unchanged.
 
 ## Untrusted message text
 

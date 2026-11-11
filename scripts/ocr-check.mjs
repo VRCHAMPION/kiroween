@@ -16,6 +16,7 @@ import { tmpdir } from 'node:os';
 import { dirname, extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
+import { responseHeaders } from './vercel-headers.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
@@ -73,7 +74,7 @@ function serve() {
         if (!file.startsWith(DIST)) return void res.writeHead(403).end();
         if ((await stat(file).catch(() => undefined))?.isDirectory()) file = join(file, 'index.html');
         const body = await readFile(file);
-        res.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' });
+        res.writeHead(200, responseHeaders(path, TYPES[extname(file)] ?? 'application/octet-stream'));
         res.end(body);
       } catch {
         res.writeHead(404).end('not found');

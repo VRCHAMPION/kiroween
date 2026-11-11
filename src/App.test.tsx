@@ -18,6 +18,16 @@ async function violationsFor(container: HTMLElement) {
 }
 
 describe('App shell', () => {
+  it('shows the not-a-guarantee note in a footer in both views', () => {
+    const { container, unmount } = render(<App />);
+    const text = 'Not a guarantee. When in doubt, call your bank on the number on your card.';
+    expect(container.querySelector('footer')?.textContent).toBe(text);
+    unmount();
+    window.localStorage.setItem('phantom-inbox:view', 'haunted');
+    render(<App />);
+    expect(screen.getByText(text).closest('footer')).not.toBeNull();
+  });
+
   it('shows the product name and pitch', () => {
     render(<App />);
     expect(screen.getByRole('heading', { name: 'Phantom Inbox' })).toBeTruthy();

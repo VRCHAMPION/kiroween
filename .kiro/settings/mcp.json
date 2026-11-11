@@ -1,0 +1,28 @@
+{
+    "mcpServers":  {
+                       "playwright":  {
+                                          "command":  "npx",
+                                          "args":  [
+                                                       "-y",
+                                                       "@playwright/mcp@0.0.85",
+                                                       "--browser",
+                                                       "msedge",
+                                                       "--isolated",
+                                                       "--output-dir",
+                                                       "docs/screenshots",
+                                                       "--allowed-origins",
+                                                       "http://127.0.0.1:4173;http://localhost:4173",
+                                                       "--viewport-size",
+                                                       "360x780"
+                                                   ],
+                                          "disabled":  false,
+                                          "autoApprove":  [
+                                                              "browser_snapshot",
+                                                              "browser_take_screenshot",
+                                                              "browser_console_messages",
+                                                              "browser_network_requests",
+                                                              "browser_wait_for"
+                                                          ]
+                                      }
+                   }
+}

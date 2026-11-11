@@ -6,6 +6,7 @@ import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { CSP } from './csp.ts';
 import { OCR_ASSETS } from './ocr-assets.ts';
+import { headersFor } from './scripts/vercel-headers.mjs';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const fromModules = (source: string) => join(ROOT, 'node_modules', source);
@@ -28,8 +29,27 @@ function ocrAssets(): Plugin {
     },
     generateBundle() {
       for (const asset of OCR_ASSETS) {
-        this.emitFile({ type: 'asset', fileName: asset.path, source: readFileSync(fromModules(asset.source)) });
+        let source: string | Buffer = readFileSync(fromModules(asset.source));
+        // The packages' source maps are not shipped, so drop the comment that points at them (it would 404 in DevTools).
+        if (asset.contentType.startsWith('text/javascript')) {
+          source = source.toString('utf8').replace(/\n?\/\/# sourceMappingURL=\S+\s*$/, '\n');
+        }
+        this.emitFile({ type: 'asset', fileName: asset.path, source });
       }
+    },
+  };
+}
+
+/** `npm run preview` sends the same headers as the hosted site (vercel.json). The dev server stays exempt. */
+function hostedHeaders(): Plugin {
+  return {
+    name: 'phantom-hosted-headers',
+    configurePreviewServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const pathname = decodeURIComponent((req.url ?? '/').split('?')[0]);
+        for (const [key, value] of headersFor(pathname)) res.setHeader(key, value);
+        next();
+      });
     },
   };
 }
@@ -39,6 +59,7 @@ export default defineConfig({
   plugins: [
     react(),
     ocrAssets(),
+    hostedHeaders(),
     {
       name: 'phantom-csp',
       apply: 'build',
@@ -53,6 +74,7 @@ export default defineConfig({
       },
     },
   ],
+  preview: { host: '127.0.0.1', port: 4173, strictPort: true },
   test: {
     environment: 'jsdom',
     testTimeout: 15000,

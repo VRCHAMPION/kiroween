@@ -3,7 +3,9 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
-import { CSP } from '../csp';
+import { CSP, OCR_WORKER_CSP } from '../csp';
+import { OCR_ASSETS } from '../ocr-assets';
+import { headersFor, responseHeaders } from '../scripts/vercel-headers.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel: string) => readFileSync(join(ROOT, rel), 'utf8');
@@ -135,11 +137,11 @@ describe('steering: tech.md', () => {
     expect(bullets.length, `tech.md: stack entry for ${tool}`).toBe(1);
   });
 
-  it('package.json defines exactly the five documented scripts', () => {
-    expect(Object.keys(pkg.scripts).sort()).toEqual(['build', 'dev', 'lint', 'test', 'typecheck']);
+  it('package.json defines exactly the six documented scripts', () => {
+    expect(Object.keys(pkg.scripts).sort()).toEqual(['build', 'dev', 'lint', 'preview', 'test', 'typecheck']);
   });
 
-  it.each(['dev', 'build', 'typecheck', 'lint', 'test'])('tech.md documents script %s with its real command', (name) => {
+  it.each(['dev', 'build', 'typecheck', 'lint', 'test', 'preview'])('tech.md documents script %s with its real command', (name) => {
     expect(doc.includes(`\`${name}\` (\`${pkg.scripts[name]}\`)`), `tech.md: script ${name} mismatch`).toBe(true);
   });
 
@@ -236,6 +238,71 @@ describe('steering: security-privacy.md', () => {
     expect(CSP).toContain("connect-src 'none'");
     expect(CSP).toContain("script-src 'self'");
     expect(CSP).not.toMatch(/unsafe-(inline|eval)/);
+  });
+});
+
+// ---------- Hosting (vercel.json) ----------
+describe('hosting: vercel.json', () => {
+  const config = JSON.parse(read('vercel.json')) as {
+    framework: string;
+    buildCommand: string;
+    outputDirectory: string;
+  };
+  const header = (path: string, name: string) => headersFor(path).find(([k]) => k.toLowerCase() === name.toLowerCase())?.[1];
+  it('serves the Vite build from dist', () => {
+    expect(config.framework).toBe('vite');
+    expect(config.buildCommand).toBe('npm run build');
+    expect(config.outputDirectory).toBe('dist');
+  });
+  it.each(['/', '/index.html', '/assets/index-abc.js'])('%s gets the page CSP from csp.ts', (path) => {
+    expect(header(path, 'Content-Security-Policy')).toBe(CSP);
+  });
+  it('OCR files get the worker policy from csp.ts', () => {
+    for (const asset of OCR_ASSETS) expect(header(`/${asset.path}`, 'Content-Security-Policy'), asset.path).toBe(OCR_WORKER_CSP);
+  });
+  it('the worker policy allows no other origin and no unsafe-inline or unsafe-eval', () => {
+    expect(OCR_WORKER_CSP).toContain("script-src 'self' 'wasm-unsafe-eval'");
+    expect(OCR_WORKER_CSP).toContain("connect-src 'self'");
+    expect(OCR_WORKER_CSP).not.toMatch(/(?<!wasm-)unsafe-(inline|eval)|https?:|\*/);
+  });
+  it.each([
+    ['X-Content-Type-Options', 'nosniff'],
+    ['Referrer-Policy', 'no-referrer'],
+    ['Permissions-Policy', 'camera=(), microphone=(), geolocation=()'],
+    ['X-Frame-Options', 'DENY'],
+  ])('sends %s: %s on every path, including OCR files', (name, value) => {
+    for (const path of ['/', '/assets/x.js', '/ocr/worker.min.js']) expect(header(path, name), `${path} ${name}`).toBe(value);
+  });
+  it('a .wasm file is served as application/wasm', () => {
+    expect(responseHeaders('/ocr/core/engine.wasm', 'application/octet-stream')['content-type']).toBe('application/wasm');
+  });
+  it('every OCR asset keeps its declared content type', () => {
+    for (const asset of OCR_ASSETS) expect(responseHeaders(`/${asset.path}`, asset.contentType)['content-type'], asset.path).toBe(asset.contentType);
+  });
+  it('the security-privacy steering document names the worker policy', () => {
+    expect(read('.kiro/steering/security-privacy.md')).toContain('OCR_WORKER_CSP');
+  });
+});
+
+// ---------- Page metadata ----------
+describe('index.html metadata', () => {
+  const html = read('index.html');
+  const meta = (attr: string, name: string) => new RegExp(`<meta ${attr}="${name}" content="([^"]+)"`).exec(html)?.[1];
+  it('has a title and a description', () => {
+    expect(html).toContain('<title>Phantom Inbox</title>');
+    expect(meta('name', 'description')?.length ?? 0).toBeGreaterThan(40);
+  });
+  it.each(['og:type', 'og:site_name', 'og:title', 'og:description'])('has the Open Graph tag %s', (name) => {
+    expect(meta('property', name), name).toBeTruthy();
+  });
+  it('uses no URL to another origin in the head', () => {
+    const head = /<head>([\s\S]*)<\/head>/.exec(html)?.[1] ?? '';
+    expect(head).not.toMatch(/https?:\/\/(?!www\.w3\.org\/2000\/svg)/);
+  });
+  it('links the ghost favicon file by a relative path, and the file exists', () => {
+    expect(html).toContain('href="./favicon.svg"');
+    expect(exists('public/favicon.svg')).toBe(true);
+    expect(read('public/favicon.svg')).toContain('<svg');
   });
 });
 
@@ -477,7 +544,7 @@ describe('README', () => {
     expect(doc).toContain('npm test');
     expect(scripts.test).toBe('vitest --run');
     const runs = [...doc.matchAll(/npm run ([a-z]+)/g)].map((m) => m[1]);
-    expect(new Set(runs)).toEqual(new Set(['dev', 'build']));
+    expect(new Set(runs)).toEqual(new Set(['dev', 'build', 'preview']));
     for (const name of runs) expect(scripts[name], `README: unknown script ${name}`).toBeDefined();
   });
 

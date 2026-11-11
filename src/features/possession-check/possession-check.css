@@ -1,6 +1,7 @@
 /* Mobile first: one column, large targets, tokens only. */
 .possession-check {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   max-width: 44rem;
   margin: 0 auto;
@@ -23,6 +24,7 @@
 
 .field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
 }
 
@@ -64,11 +66,13 @@
 
 .input-options {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
 }
 
 .dropzone {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   justify-items: start;
   padding: var(--space-3);
@@ -83,6 +87,7 @@
 
 .email-details {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   padding: var(--space-3);
   background: var(--color-surface);
@@ -91,7 +96,7 @@
 
 .email-details dl {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: max-content minmax(0, 1fr);
   gap: var(--space-1) var(--space-2);
   margin: 0;
 }
@@ -118,6 +123,7 @@
 
 .check-row {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
 }
 
@@ -152,6 +158,7 @@
 
 .result-panel {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   padding: var(--space-3);
   background: var(--color-surface);
@@ -224,6 +231,7 @@
 .checked-message,
 .checked-details {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
   padding: var(--space-2);
   background: var(--color-bg);
@@ -266,6 +274,7 @@
 .attachment-list,
 .flag-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   margin: 0;
   padding: 0;
@@ -274,6 +283,7 @@
 
 .flag-card {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
   padding: var(--space-2) var(--space-3);
   background: var(--color-bg);
@@ -325,7 +335,7 @@
 
 @media (min-width: 48rem) {
   .input-options {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: start;
   }
 

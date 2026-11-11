@@ -2,6 +2,7 @@
    transform and opacity, and reduced-motion mode removes it (see app.css). */
 .seance {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
   max-width: 44rem;
   margin: 0 auto;
@@ -30,6 +31,7 @@
 .seance-feedback,
 .seance-end {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   padding: var(--space-3);
   background: var(--color-surface);
@@ -49,7 +51,7 @@
 
 .round-email {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: max-content minmax(0, 1fr);
   gap: var(--space-1) var(--space-2);
   margin: 0;
 }
@@ -80,12 +82,13 @@
 
 .seance-answer {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
 }
 
 .seance-buttons {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: var(--space-2);
 }
 
@@ -129,6 +132,7 @@
 
 .seance-flags {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   margin: 0;
   padding: 0;
@@ -137,6 +141,7 @@
 
 .seance-flag {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
   padding: var(--space-2);
   background: var(--color-bg);
@@ -155,6 +160,7 @@
 .safe-reasons,
 .missed-topics {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
   margin: 0;
   padding-left: 1.4em;
@@ -234,6 +240,7 @@
 .seance-candle {
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   justify-items: center;
   width: 14px;
 }

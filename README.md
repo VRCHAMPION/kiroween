@@ -77,7 +77,8 @@ npm run build
 - `npm install` installs the pinned dependencies.
 - `npm run dev` starts the development server.
 - `npm test` runs every test once with `vitest --run`.
-- `npm run build` writes the static site to `dist/`, ready for GitHub Pages, Netlify or Cloudflare Pages.
+- `npm run build` writes the static site to `dist/`, ready for GitHub Pages, Netlify, Cloudflare Pages or Vercel.
+- `npm run preview` serves the finished build at http://127.0.0.1:4173 with the same security headers as the hosted site.
 
 ## Performance check
 
@@ -85,6 +86,33 @@ After `npm run build`, run `node scripts/perf-mobile.mjs` to test the built site
 
 Run `node scripts/ocr-check.mjs` to read two made-up chat screenshots through the built site, under its Content-Security-Policy. It checks the text read, that no other origin is contacted and that nothing is stored, and writes [docs/ocr-check.md](docs/ocr-check.md).
 
+## Deploy to Vercel
+Phantom Inbox is a static site, so the free Hobby plan on Vercel is enough. Push the repository to GitHub first, then do this in your browser:
+1. Sign in at [vercel.com](https://vercel.com). Choose "Continue with GitHub" if you have no account.
+2. On the dashboard, click **Add New...** and then **Project**.
+3. Under **Import Git Repository**, find your repository. If it is not listed, click **Adjust GitHub App Permissions** (or **Add GitHub Account**), authorize Vercel on GitHub, choose the repository and save. Then click **Import** next to it.
+4. On the **Configure Project** screen, set:
+   - **Framework Preset**: Vite (or Other; `vercel.json` already says `vite`).
+   - **Root Directory**: leave as `./`.
+   - **Build Command**: `npm run build`.
+   - **Output Directory**: `dist`.
+   - **Install Command**: `npm install`.
+   - **Environment Variables**: add none. The app needs no keys.
+5. Click **Deploy** and wait for the build to finish (about a minute).
+6. Click the preview image or **Visit** to open your `*.vercel.app` address. Paste a sample message and press "Check this message" to confirm it works. Open "Haunted view" and "Séance" once too, since those parts load on first use.
+7. Optional: open the project, then **Settings** and **Domains**, type your domain, click **Add** and follow the DNS steps Vercel shows.
+8. Check the security headers: open your site, press F12, open the **Network** tab, reload, click the first request (the page itself) and read **Response Headers**. You should see `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy` and `X-Frame-Options: DENY`. Click a file under `ocr/` (read a screenshot to trigger it) and you should see its own, slightly wider policy that lets the reader run WebAssembly and load its language data from this site only.
+Notes on what is configured:
+- `vercel.json` sets the build and the headers. The page policy is the one in `csp.ts`. Files in `ocr/` get a second policy (`OCR_WORKER_CSP`) because a worker takes its policy from its own response, and without it screenshot reading does not start.
+- Every later push to the main branch deploys again on its own. Pull requests get their own preview address.
+- Run `node scripts/dist-check.mjs` after `npm run build` to check that the build has no local paths and works from the site root and from a sub-path.
+## End-to-end check and screenshots
+`node scripts/journeys.mjs` drives the built site in a real browser on a phone-size and a desktop-size screen, in both views: it checks a scam sample, reads the Exorcism steps, plays a whole Séance game and reads an uploaded screenshot. The pictures are saved in [docs/screenshots/](docs/screenshots/) and the results are in [docs/e2e-journeys.md](docs/e2e-journeys.md). Examples:
+- Mortal view on a phone: [result](docs/screenshots/phone-mortal-03-result.png) and [Exorcism](docs/screenshots/phone-mortal-04-exorcism.png).
+- Haunted view on a desktop: [result](docs/screenshots/desktop-haunted-03-result.png) and [Séance end](docs/screenshots/desktop-haunted-09-seance-end.png).
+The Playwright MCP server is set up in `.kiro/settings/mcp.json` so Kiro can drive the same journeys by hand.
+## Bundle size
+Heavy parts load only when needed. The first page load is the app shell and the checker (about 309 kB, 99 kB compressed). The Séance (12 kB), the Haunted backdrop (4 kB) and the screenshot reader (its own files in `ocr/`, several MB) load the first time they are used. Everything is served from this site.
 ## Assets and licences
 
 No copyrighted images or sounds are used, and nothing loads from another site.

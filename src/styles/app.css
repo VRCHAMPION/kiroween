@@ -43,6 +43,7 @@ body {
 
 .settings {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   background: var(--color-surface);
@@ -125,4 +126,20 @@ body {
 .possession-check h2:focus-visible {
   outline: var(--focus-width) solid var(--color-focus);
   outline-offset: 2px;
+}
+
+.app-footer {
+  box-sizing: border-box;
+  max-width: 44rem;
+  min-height: 44px;
+  margin: var(--space-4) auto 0;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+}
+
+.app-footer p {
+  margin: 0;
+  overflow-wrap: anywhere;
 }

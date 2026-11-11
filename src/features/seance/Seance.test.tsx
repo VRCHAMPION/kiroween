@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axe from 'axe-core';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -265,7 +265,9 @@ describe('S\u00e9ance: in the app', () => {
 
     await user.click(seanceTab);
     expect(seanceTab.getAttribute('aria-current')).toBe('page');
-    expect(document.activeElement).toBe(screen.getByRole('heading', { level: 2, name: 'S\u00e9ance' }));
+    // The Séance is loaded the first time it is opened, then focus moves to its heading.
+    const seanceHeading = await screen.findByRole('heading', { level: 2, name: 'S\u00e9ance' });
+    await waitFor(() => expect(document.activeElement).toBe(seanceHeading));
     expect(screen.queryByRole('textbox')).toBeNull();
     expect(feedbackRegion()).toBeNull();
     await user.keyboard('s');
