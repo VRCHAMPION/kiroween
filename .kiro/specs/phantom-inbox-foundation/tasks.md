@@ -28,7 +28,7 @@ Fixed values that several tasks must copy exactly (single source of truth for th
 ## Tasks
 
 - [ ] 1. Steering documents
-  - Each file lives directly in `d:\projects\kiroween\.kiro\steering\`, starts on line 1 with a front matter block (`---`, `inclusion: always`, `---`), has at most 200 lines, uses headings and short bullets, and explains any non-obvious term at first use.
+  - Each file lives directly in `.kiro/steering/`, starts on line 1 with a front matter block (`---`, `inclusion: always`, `---`), has at most 200 lines, uses headings and short bullets, and explains any non-obvious term at first use.
   - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
   - [ ] 1.1 Write `.kiro/steering/product.md`
@@ -189,7 +189,7 @@ Fixed values that several tasks must copy exactly (single source of truth for th
   - Run, one per call: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`. All must exit 0. Fix failures at the cause (never by skipping or deleting tests). Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 6. Agent hooks
-  - Create these after all `src/` work is done so the hooks do not fire during scaffolding. Write each file with the file-writing tool at `d:\projects\kiroween\.kiro\hooks\<id>.json`, in the schema `{"version":"v1","hooks":[{"name","trigger","matcher"?,"action":{"type","command"|"prompt"}}]}`. In JSON, escape every `\` of the Overview matchers as `\\`.
+  - Create these after all `src/` work is done so the hooks do not fire during scaffolding. Write each file with the file-writing tool at `.kiro/hooks/<id>.json`, in the schema `{"version":"v1","hooks":[{"name","trigger","matcher"?,"action":{"type","command"|"prompt"}}]}`. In JSON, escape every `\` of the Overview matchers as `\\`.
   - If a hook file cannot be created, list for the user its exact name, trigger, matcher, action type and command or prompt, and report it as not created (Requirement 10.9).
 
   - [ ] 6.1 Create `run-tests.json`
@@ -242,7 +242,7 @@ Fixed values that several tasks must copy exactly (single source of truth for th
 
   - [ ] 9.4 Add hook checks
     - Each of the four hook files parses as JSON, has `version` `"v1"`, a non-empty `name` per entry, a trigger from the supported list, and a valid action; `rule-tests` and `a11y-check` have one entry per trigger; `journal` has no matcher.
-    - Matcher behaviour with `new RegExp(matcher)`: run-tests matches `src/App.tsx`, `src\components\X.tsx` and `d:\projects\kiroween\src\a.ts`, and does not match `tests/x.ts`; rule-tests matches `src/detection/rules/kyc.ts` and `src\detection\rules\kyc.ts` but not `kyc.test.ts` or `kyc.test.tsx` or files outside `rules`; a11y-check matches `.tsx` and `.css` under `src` with both separators but not `*.test.ts` or `*.test.tsx`.
+    - Matcher behaviour with `new RegExp(matcher)`: run-tests matches `src/App.tsx`, `src\components\X.tsx` and `D:\code\app\src\a.ts`, and does not match `tests/x.ts`; rule-tests matches `src/detection/rules/kyc.ts` and `src\detection\rules\kyc.ts` but not `kyc.test.ts` or `kyc.test.tsx` or files outside `rules`; a11y-check matches `.tsx` and `.css` under `src` with both separators but not `*.test.ts` or `*.test.tsx`.
     - Prompts of rule-tests and a11y-check each contain an instruction not to edit files outside scope.
     - _Requirements: 10.1 to 10.8_
 

@@ -288,7 +288,7 @@ describe('hooks', () => {
     const run = matcherOf('run-tests');
     const rule = matcherOf('rule-tests');
     const a11y = matcherOf('a11y-check');
-    for (const p of ['src/App.tsx', 'src\\components\\X.tsx', 'd:\\projects\\kiroween\\src\\a.ts']) expect(run.test(p), p).toBe(true);
+    for (const p of ['src/App.tsx', 'src\\components\\X.tsx', 'D:\\code\\app\\src\\a.ts']) expect(run.test(p), p).toBe(true);
     for (const p of ['tests/x.ts', 'mysrc/a.ts', 'src/a.css']) expect(run.test(p), p).toBe(false);
     for (const p of ['src/detection/rules/kyc.ts', 'd:\\x\\src\\detection\\rules\\kyc.ts']) expect(rule.test(p), p).toBe(true);
     for (const p of ['src/detection/rules/kyc.test.ts', 'src/detection/rules/kyc.test.tsx', 'src/detection/engine.ts', 'src/detection/rules/sub/kyc.ts'])
@@ -301,7 +301,7 @@ describe('hooks', () => {
   const segment = fc.stringMatching(/^[A-Za-z0-9_-]{1,8}$/).filter((s) => s !== 'src');
   const sep = fc.constantFrom('/', '\\');
   const dirs = fc.array(fc.tuple(segment, sep), { maxLength: 3 }).map((parts) => parts.map(([s, p]) => s + p).join(''));
-  const prefix = fc.constantFrom('', 'd:\\projects\\kiroween\\', '/home/dev/app/');
+  const prefix = fc.constantFrom('', 'D:\\code\\app\\', '/srv/app/');
   const baseName = fc.stringMatching(/^[A-Za-z0-9_-]{1,12}$/);
 
   // Feature: phantom-inbox-foundation, Property 7: The run-tests matcher accepts every TypeScript file under an src segment
@@ -491,7 +491,7 @@ describe('README', () => {
 
 describe('.gitignore', () => {
   const lines = read('.gitignore').split(/\r?\n/).map((l) => l.trim());
-  it.each(['node_modules/', 'dist/', 'coverage/', '.env', '.env.*'])('ignores %s', (entry) => {
+  it.each(['node_modules/', 'dist/', 'coverage/', '.env', '.env.*', '*.log', '*-done.txt', 'checks.txt', '*.bak', '.vscode/', 'Thumbs.db', '.DS_Store', 'test-results/'])('ignores %s', (entry) => {
     expect(lines).toContain(entry);
   });
   it('never ignores .kiro', () => {

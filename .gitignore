@@ -4,3 +4,15 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# Local logs, temp output and backups
+*.log
+*-done.txt
+checks.txt
+*.bak
+test-results/
+
+# Editor and OS files
+.vscode/
+Thumbs.db
+.DS_Store

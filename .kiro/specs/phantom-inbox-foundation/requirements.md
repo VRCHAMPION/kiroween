@@ -10,7 +10,7 @@ This spec covers the FOUNDATION STEP only: steering documents, a runnable and te
 
 ## Glossary
 
-- **Project**: The Phantom Inbox repository rooted at `d:\projects\kiroween`.
+- **Project**: The Phantom Inbox repository, rooted at the repository root.
 - **Steering_Docs**: The five Markdown files in `.kiro/steering/`: `product.md`, `tech.md`, `structure.md`, `design-system.md`, `security-privacy.md`.
 - **Scaffold**: The runnable React + Vite + TypeScript application, its configuration, and its sample tests.
 - **App_Shell**: The placeholder UI that shows the product name and the view toggle.

@@ -325,7 +325,7 @@ All four hooks are JSON files in `.kiro/hooks/` with schema `{"version":"v1","ho
 
 How the matchers work:
 
-- `(^|[/\\])src[/\\]` requires `src` to be a whole path segment. `mysrc/x.ts` does not match, `d:\projects\kiroween\src\a.ts` does, and `src/a.ts` does (start of string).
+- `(^|[/\\])src[/\\]` requires `src` to be a whole path segment. `mysrc/x.ts` does not match, `D:\code\app\src\a.ts` (an absolute Windows path) does, and `src/a.ts` does (start of string).
 - `rule-tests`: after the `rules` segment, the negative lookahead `(?![^/\\]*\.test\.ts$)` rejects a file name ending in `.test.ts`. `[^/\\]+\.ts$` cannot cross a separator, so files in sub-folders and `.tsx` files do not match.
 - `a11y-check`: the lookahead `(?!.*\.test\.tsx?$)` right after `src/` scans the rest of the path, so any path ending in `.test.ts` or `.test.tsx` fails before `.(tsx|css)$` is tried. Because the final extension must be `tsx` or `css`, `.test.ts` cannot match anyway.
 - `run-tests` deliberately matches test files too, so saving a test runs the suite.
