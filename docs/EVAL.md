@@ -23,16 +23,17 @@ One file (`cmds`, a corpus index file) was skipped, as designed.
 
 - Date: 2026-11-11
 - Command: `npm run eval`
-- Positives: Nazario phishing corpus, files `phishing-2022.txt`, `phishing-2023.txt`, `phishing-2024.txt` and `phishing-2025.txt` (1,548 messages). Source: https://monkey.org/~jose/phishing/
+- Positives: Nazario phishing corpus, all 15 files in the public archive from 2005 to 2025 (8,034 messages). Source: https://monkey.org/~jose/phishing/
 - Negatives: SpamAssassin public corpus, `20030228_easy_ham` and `20030228_hard_ham` (2,750 messages). Source: https://spamassassin.apache.org/old/publiccorpus/
-- Skipped files: 0. The older Nazario files (2005 to 2007 mboxes and 2015 to 2021) were not used, so this is still a subset.
+- Skipped: 1 message in `phishing-2019.txt` has no email headers (it is a body fragment), so the parser rejects it. It is not counted in any row below. This is a small gap, and it slightly flatters the phishing results.
+- The private `private-phishing4.mbox` (31 MB) is not used, because it is not public and the script skips files over 20 MB.
 
 | Counting as scam | TP | FP | TN | FN | Precision | Recall | False-positive rate |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Suspicious or likely scam | 892 | 203 | 2,547 | 656 | 81.5% | 57.6% | 7.4% |
-| Likely scam only (strict) | 128 | 11 | 2,739 | 1,420 | 92.1% | 8.3% | 0.4% |
+| Suspicious or likely scam | 4,964 | 203 | 2,547 | 3,070 | 96.1% | 61.8% | 7.4% |
+| Likely scam only (strict) | 1,663 | 11 | 2,739 | 6,371 | 99.3% | 20.7% | 0.4% |
 
-How to read these: the normal mail is from 2002 to 2003 and the phishing mail is from 2022 to 2025. Dated mail can differ in style, so these numbers are a rough guide only. The strict setting rarely flags normal mail but misses most scams (recall 8.3%). The default setting catches about 58% of the scams and flags about 1 in 13 normal messages.
+How to read these: the normal mail is from 2002 to 2003 and the phishing mail is from 2005 to 2025. Dated mail can differ in style, so these numbers are a rough guide only. The default setting catches about 62% of the scams and flags about 1 in 13 normal messages. The strict setting almost never flags normal mail but catches only about 21% of the scams.
 
 `eval-data/` is gitignored. Never commit a corpus; each corpus has its own terms for the person who downloads it.
 
