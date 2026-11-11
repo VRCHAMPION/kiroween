@@ -23,10 +23,10 @@ One file (`cmds`, a corpus index file) was skipped, as designed.
 
 - Date: 2026-11-11
 - Command: `npm run eval`
-- Positives: Nazario phishing corpus, all 15 files in the public archive from 2005 to 2025 (8,034 messages). Source: https://monkey.org/~jose/phishing/
+- Positives: Nazario phishing corpus, 15 of the 17 mbox and text files in the public archive, dated 2005 to 2025 (8,034 messages). Source: https://monkey.org/~jose/phishing/
 - Negatives: SpamAssassin public corpus, `20030228_easy_ham` and `20030228_hard_ham` (2,750 messages). Source: https://spamassassin.apache.org/old/publiccorpus/
 - Skipped: 1 message in `phishing-2019.txt` has no email headers (it is a body fragment), so the parser rejects it. It is not counted in any row below. This is a small gap, and it slightly flatters the phishing results.
-- The private `private-phishing4.mbox` (31 MB) is not used, because it is not public and the script skips files over 20 MB.
+- Not used: `private-phishing4.mbox` (31 MB, over the script's 20 MB limit) and `20051114.mbox`, which was not downloaded.
 
 | Counting as scam | TP | FP | TN | FN | Precision | Recall | False-positive rate |
 | --- | --- | --- | --- | --- | --- | --- | --- |
